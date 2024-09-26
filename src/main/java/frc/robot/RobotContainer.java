@@ -7,13 +7,19 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.wpilibj.Joystick;
 
 import java.io.File;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,15 +28,63 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final Joystick driver = new Joystick(0);
+  private final Joystick driver2 = new Joystick(1);
+  /* Drive Controls */
+  private final int translationAxis = XboxController.Axis.kLeftY.value;
+  private final int strafeAxis = XboxController.Axis.kLeftX.value;
+  private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+  private final POVButton dPad_Right = new POVButton(driver2, 90, 0);
+  private final POVButton dPad_Top = new POVButton(driver2, 0, 0);
+  private final POVButton dPad_Left = new POVButton(driver2, 270, 0);
+  private final POVButton dPad_Down = new POVButton(driver2, 180);
+  private final JoystickButton aButton = new JoystickButton(driver2, XboxController.Button.kA.value);
+  private final JoystickButton leftBumper = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton limeLightDriveButton = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton rightTrigger = new JoystickButton(driver2, 3);
+  private final JoystickButton hangarmUpButton = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton hangarmDownButton = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton x2Button = new JoystickButton(driver2, XboxController.Button.kX.value);
+
+  /* Driver Buttons */
+  private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kStart.value);
+
+  private final SendableChooser<String> chooserColor;
+  private final SendableChooser<String> chooserTarget;
+
+  private final JoystickButton slowSpeed = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
+  private final JoystickButton turbo = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+
+  private final POVButton hangarmLeftDown = new POVButton(driver, 270, 0);
+  private final POVButton hangarmRightDown = new POVButton(driver, 90, 0);
+
+  /* Subsystems */
+  public final SwerveSubsystem s_Swerve = new SwerveSubsystem();
+  public final Camera s_Camera = new Camera();
+  public final Conveyor s_Conveyor = new Conveyor();
+  public final Hangarm s_Hangarm = new Hangarm();
+
+  // /* Commands */
+  public final GroundIntake c_GroundIntake = new GroundIntake(s_Conveyor);
+  public final GroundOuttake c_GroundOuttake = new GroundOuttake(s_Conveyor);
+  public final UpperIntake c_UpperIntake = new UpperIntake(s_Conveyor);
+  public final LimelightDrive c_LimelightDrive = new LimelightDrive(s_Camera, s_Swerve, 30, 50, 0, 0);
+  public final LimelightDrive c_runTheTrap = new LimelightDrive(s_Camera, s_Swerve, 30, 22, 0, 0);
+
+
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    
     // Configure the trigger bindings
     configureBindings();
   }
@@ -54,6 +108,9 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
+  public void teleopInit() {
+    drivebase.setDefaultCommand(drivebase.driveCommand( () -> driver1.getRawAxis(translationAxis), () -> driver1.getRawAxis(strafeAxis), () -> driver1.getRawAxis(rotationAxis)));
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
