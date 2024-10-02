@@ -5,8 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.Joystick;
 
 import java.io.File;
@@ -64,16 +64,11 @@ public class RobotContainer {
 
   /* Subsystems */
   public final SwerveSubsystem s_Swerve = new SwerveSubsystem();
-  public final Camera s_Camera = new Camera();
   public final Conveyor s_Conveyor = new Conveyor();
-  public final Hangarm s_Hangarm = new Hangarm();
 
   // /* Commands */
   public final GroundIntake c_GroundIntake = new GroundIntake(s_Conveyor);
   public final GroundOuttake c_GroundOuttake = new GroundOuttake(s_Conveyor);
-  public final UpperIntake c_UpperIntake = new UpperIntake(s_Conveyor);
-  public final LimelightDrive c_LimelightDrive = new LimelightDrive(s_Camera, s_Swerve, 30, 50, 0, 0);
-  public final LimelightDrive c_runTheTrap = new LimelightDrive(s_Camera, s_Swerve, 30, 22, 0, 0);
 
 
   // The robot's subsystems and commands are defined here...
@@ -106,6 +101,8 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    aButton.whileTrue(c_GroundIntake);
+    leftBumper.whileTrue(c_GroundOuttake);
   }
 
   public void teleopInit() {
