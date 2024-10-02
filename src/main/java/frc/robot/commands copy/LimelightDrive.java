@@ -12,7 +12,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class LimelightDrive extends CommandBase{ 
     private Camera m_camera;
-    private Swerve m_swerve;
+    private SwerveSubsystem m_swerve;
     private boolean complete = false;
     private double timeout;
     private Timer timer = new Timer();
@@ -24,7 +24,7 @@ public class LimelightDrive extends CommandBase{
 
 
 
-    public LimelightDrive(Camera camera, Swerve swerve, double timeout, double xDistance, double yDistance, double theta) {
+    public LimelightDrive(Camera camera, SwerveSubsystem swerve, double timeout, double xDistance, double yDistance, double theta) {
         m_camera = camera;
         m_swerve  = swerve;
         this.timeout = timeout;

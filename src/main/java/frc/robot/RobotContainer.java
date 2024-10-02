@@ -109,7 +109,7 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    drivebase.setDefaultCommand(drivebase.driveCommand( () -> driver1.getRawAxis(translationAxis), () -> driver1.getRawAxis(strafeAxis), () -> driver1.getRawAxis(rotationAxis)));
+    drivebase.setDefaultCommand(drivebase.driveCommand( () -> driver.getRawAxis(translationAxis), () -> driver.getRawAxis(strafeAxis), () -> driver.getRawAxis(rotationAxis)));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
