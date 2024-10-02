@@ -52,8 +52,8 @@ public class RobotContainer {
   /* Driver Buttons */
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kStart.value);
 
-  private final SendableChooser<String> chooserColor;
-  private final SendableChooser<String> chooserTarget;
+  // private final SendableChooser<String> chooserColor;
+  // private final SendableChooser<String> chooserTarget;
 
   private final JoystickButton slowSpeed = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
@@ -63,7 +63,8 @@ public class RobotContainer {
   private final POVButton hangarmRightDown = new POVButton(driver, 90, 0);
 
   /* Subsystems */
-  public final SwerveSubsystem s_Swerve = new SwerveSubsystem();
+  public final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  "swerve"));
   public final Conveyor s_Conveyor = new Conveyor();
 
   // /* Commands */
