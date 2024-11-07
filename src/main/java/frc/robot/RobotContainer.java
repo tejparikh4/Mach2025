@@ -70,16 +70,26 @@ public class RobotContainer {
   // /* Commands */
   public final GroundIntake c_GroundIntake = new GroundIntake(s_Conveyor);
   public final GroundOuttake c_GroundOuttake = new GroundOuttake(s_Conveyor);
-
-
+private String thingthing;
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private final SwerveSubsystem drivebase;
+
+  private final SendableChooser<String> chooserSwerve;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    chooserSwerve = new SendableChooser<String>();
+    chooserSwerve.setDefaultOption("neo", "neo");
+    chooserSwerve.addOption("Kraken", "Kraken");
+
+    if(chooserSwerve.getSelected() == "Kraken") {
+      drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_kraken"));
+    } else {
+      drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_neo"));
+    }
     
     // Configure the trigger bindings
     configureBindings();
