@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
 
@@ -74,22 +75,15 @@ private String thingthing;
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase;
 
-  private final SendableChooser<String> chooserSwerve;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    chooserSwerve = new SendableChooser<String>();
-    chooserSwerve.setDefaultOption("neo", "neo");
-    chooserSwerve.addOption("Kraken", "Kraken");
-
-    if(chooserSwerve.getSelected() == "Kraken") {
-      drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_kraken"));
-    } else {
-      drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_neo"));
-    }
+    String rioSerialNum = RobotController.getSerialNumber();
+    drivebase = (rioSerialNum.equals("abcd"))? new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_kraken")):
+     new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_neo")); // find serial number of kraken roborio and update this line
     
     // Configure the trigger bindings
     configureBindings();
