@@ -19,7 +19,7 @@
     "canbus": null
   },
   "encoder": {
-    "type": "none",
+    "type": "cancoder",
     "id": 0,
     "canbus": null
   },
