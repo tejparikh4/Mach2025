@@ -82,9 +82,9 @@ private String thingthing;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     String rioSerialNum = RobotController.getSerialNumber();
-    drivebase = (rioSerialNum.equals("317B6CA"))? new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_neo")):
-     new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_kraken")); // find serial number of kraken roborio and update this line
-    
+    drivebase =  new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_neo"));
+     // find serial number of kraken roborio and update this line
+    //neo seriall num 317B6CA
     // Configure the trigger bindings
     configureBindings();
   }

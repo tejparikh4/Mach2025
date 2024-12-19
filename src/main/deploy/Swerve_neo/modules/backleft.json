@@ -7,7 +7,7 @@
   "drive": {
     "type": "sparkmax",
     "id": 6,
-    "canbus": 0
+    "canbus": null
   },
   "inverted": {
     "drive": true,
@@ -19,7 +19,7 @@
     "canbus": null
   },
   "encoder": {
-    "type": "none",
+    "type": "cancoder",
     "id": 12,
     "canbus": null
   },

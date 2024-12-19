@@ -56,9 +56,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public SwerveSubsystem(File directory) {
-    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve/test");
+   // File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve/test");
     try {
-      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.maxSpeed);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
