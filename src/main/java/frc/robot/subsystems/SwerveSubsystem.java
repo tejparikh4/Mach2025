@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,8 +16,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.ReplanningConfig;
+// Line 21 and 22 are not part of the library anymore
+// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+// import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -85,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
                                                                       swerveDrive.getYaw().getRadians(),
-                                                                      swerveDrive.getMaximumVelocity()));
+                                                                      swerveDrive.getMaximumChassisVelocity()));
     });
   }
 
@@ -101,9 +101,9 @@ public class SwerveSubsystem extends SubsystemBase {
   {
     return run(() -> {
       // Make the robot move
-      swerveDrive.drive(new Translation2d(translationX.getAsDouble() * swerveDrive.getMaximumVelocity(),
-                                          translationY.getAsDouble() * swerveDrive.getMaximumVelocity()),
-                        angularRotationX.getAsDouble() * swerveDrive.getMaximumAngularVelocity(),
+      swerveDrive.drive(new Translation2d(translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                                          translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
+                        angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
     });

@@ -64,8 +64,6 @@ public class RobotContainer {
   private final POVButton hangarmRightDown = new POVButton(driver, 90, 0);
 
   /* Subsystems */
-  public final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-  "swerve"));
   public final Conveyor s_Conveyor = new Conveyor();
 
   // /* Commands */
@@ -82,7 +80,7 @@ private String thingthing;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     String rioSerialNum = RobotController.getSerialNumber();
-    drivebase =  new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_neo"));
+    drivebase =  new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "Swerve_neo"));
      // find serial number of kraken roborio and update this line
     //neo seriall num 317B6CA
     // Configure the trigger bindings
@@ -91,7 +89,7 @@ private String thingthing;
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
