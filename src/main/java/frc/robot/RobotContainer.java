@@ -7,13 +7,16 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
+import java.util.Dictionary;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -30,8 +33,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  */
 public class RobotContainer {
 
-  private final Joystick driver = new Joystick(0);
+  private final Joystick driver = new Joystick(0); 
   private final Joystick driver2 = new Joystick(1);
+  private final XboxController drive = new XboxController(0);
+  
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -71,7 +76,7 @@ public class RobotContainer {
   public final GroundOuttake c_GroundOuttake = new GroundOuttake(s_Conveyor);
 private String thingthing;
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase;
+  private final SwerveSubsystem drivebase = new SwerveSubsystem();
 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -80,14 +85,28 @@ private String thingthing;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     String rioSerialNum = RobotController.getSerialNumber();
-    drivebase =  new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "Swerve_neo"));
+  
      // find serial number of kraken roborio and update this line
     //neo seriall num 317B6CA
     // Configure the trigger bindings
     configureBindings();
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
   }
+  
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                              () -> drive.getRawAxis(translationAxis),
+                                                              () -> drive.getRawAxis(rotationAxis))
+                                                              .withControllerRotationAxis(drive::getRightX).
+                                                              deadband(0.01).
+                                                              scaleTranslation(1.2).
+                                                              allianceRelativeControl(true);
 
-  /**
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
+                                        withControllerHeadingAxis(drive::getRightX, drive::getRightY).
+                                        headingWhile(true);
+  Command driveFieldOrientedDriectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
    * predicate, or via the named factories in {@link
@@ -108,9 +127,7 @@ private String thingthing;
     leftBumper.whileTrue(c_GroundOuttake);
   }
 
-  public void teleopInit() {
-    drivebase.setDefaultCommand(drivebase.driveCommand( () -> driver.getRawAxis(translationAxis), () -> driver.getRawAxis(strafeAxis), () -> driver.getRawAxis(rotationAxis)));
-  }
+  public void teleopInit() { }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

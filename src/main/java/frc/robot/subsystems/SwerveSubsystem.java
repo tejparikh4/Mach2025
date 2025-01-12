@@ -3,8 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +44,7 @@ import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveInputStream;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -52,18 +56,24 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
    * Swerve drive object."
    */
-  private final SwerveDrive swerveDrive;
 
   /** Creates a new ExampleSubsystem. */
-  public SwerveSubsystem(File directory) {
-   // File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve/test");
-    try {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.maxSpeed);
-    } catch (Exception e) {
+  
+    double maximumSpeed = Units.feetToMeters(4.5);
+    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"Swerve_neo");
+    private final SwerveDrive swerveDrive;
+    public SwerveSubsystem(){try
+    {
+      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
+                                                                  new Pose2d(new Translation2d(Meter.of(1),
+                                                                                               Meter.of(4)),
+                                                                             Rotation2d.fromDegrees(0)));
+      // Alternative method if you don't want to supply the conversion factor via JSON files.
+      // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+    } catch (Exception e)
+    {
       throw new RuntimeException(e);
-    }
-
-  }
+    }}
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
@@ -117,5 +127,19 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return swerveDrive;
+  }
+
+  public void driveFieldOriented(ChassisSpeeds velocity){
+    swerveDrive.driveFieldOriented(velocity);
+    
+  }
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){
+    return run(() -> {
+      swerveDrive.driveFieldOriented(velocity.get());
+    });
   }
 }
