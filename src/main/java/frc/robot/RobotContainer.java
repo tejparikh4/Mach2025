@@ -9,6 +9,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.Dictionary;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -35,26 +37,12 @@ public class RobotContainer {
 
   private final Joystick driver = new Joystick(0); 
   private final Joystick driver2 = new Joystick(1);
-  private final XboxController drive = new XboxController(0);
+  private final CommandPS4Controller drive = new CommandPS4Controller(0);
   
   /* Drive Controls */
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-  private final POVButton dPad_Right = new POVButton(driver2, 90, 0);
-  private final POVButton dPad_Top = new POVButton(driver2, 0, 0);
-  private final POVButton dPad_Left = new POVButton(driver2, 270, 0);
-  private final POVButton dPad_Down = new POVButton(driver2, 180);
-  private final JoystickButton aButton = new JoystickButton(driver2, XboxController.Button.kA.value);
-  private final JoystickButton leftBumper = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton limeLightDriveButton = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton rightTrigger = new JoystickButton(driver2, 3);
-  private final JoystickButton hangarmUpButton = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton hangarmDownButton = new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton x2Button = new JoystickButton(driver2, XboxController.Button.kX.value);
-
+  private final int translationAxis = PS4Controller.Axis.kLeftY.value;
+  private final int strafeAxis = PS4Controller.Axis.kLeftX.value;
+  private final int rotationAxis = PS4Controller.Axis.kRightX.value;
   /* Driver Buttons */
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kStart.value);
 
@@ -66,7 +54,7 @@ public class RobotContainer {
   private final JoystickButton turbo = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
   private final POVButton hangarmLeftDown = new POVButton(driver, 270, 0);
-  private final POVButton hangarmRightDown = new POVButton(driver, 90, 0);
+  private final POVButton hangarmRightDown = new POVButton(driver, +90, 0);
 
   /* Subsystems */
   public final Conveyor s_Conveyor = new Conveyor();
@@ -87,6 +75,7 @@ private String thingthing;
     String rioSerialNum = RobotController.getSerialNumber();
   
      // find serial number of kraken roborio and update this line
+     
     //neo seriall num 317B6CA
     // Configure the trigger bindings
     configureBindings();
@@ -95,10 +84,10 @@ private String thingthing;
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                               () -> drive.getRawAxis(translationAxis),
-                                                              () -> drive.getRawAxis(rotationAxis))
+                                                              () -> drive.getRawAxis(strafeAxis))
                                                               .withControllerRotationAxis(drive::getRightX).
                                                               deadband(0.01).
-                                                              scaleTranslation(1.2).
+                                                              scaleTranslation(1.8).
                                                               allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
@@ -123,8 +112,6 @@ private String thingthing;
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    aButton.whileTrue(c_GroundIntake);
-    leftBumper.whileTrue(c_GroundOuttake);
   }
 
   public void teleopInit() { }

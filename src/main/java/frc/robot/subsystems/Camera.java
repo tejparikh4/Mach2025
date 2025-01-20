@@ -3,6 +3,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.Robot;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -23,6 +30,7 @@ public class Camera extends SubsystemBase {
     private final double goalHeightInches = 60.0; 
     private double distanceToGoalInches;
     private double heading;
+    // private final SwerveDrivePoseEstimator m_PoseEstimator = new SwerveDrivePoseEstimator(Constants.kinematics, SwerveSubsystem.getGyRotation2d(), null, null);
     double[] botpose;
 
     public Camera() {
@@ -34,7 +42,11 @@ public class Camera extends SubsystemBase {
         double y = ty.getDouble(0.0);
         double area = ta.getDouble(0.0);
         botpose = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
+        LimelightHelpers.PoseEstimate limelightMesurement =LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        // if (limelightMesurement.tagCount>2){
+        //   m_PoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
 
+        // } 
         // if (botpose[5] < 0)
         //     botpose[5] += 360;
 
