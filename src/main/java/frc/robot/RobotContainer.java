@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
@@ -44,35 +45,16 @@ public class RobotContainer {
   private final int strafeAxis = PS4Controller.Axis.kLeftX.value;
   private final int rotationAxis = PS4Controller.Axis.kRightX.value;
 
-  private final POVButton dPad_Right = new POVButton(driver2, 90, 0);
-  private final POVButton dPad_Top = new POVButton(driver2, 0, 0);
-  private final POVButton dPad_Left = new POVButton(driver2, 270, 0);
-  private final POVButton dPad_Down = new POVButton(driver2, 180);
-  private final JoystickButton aButton = new JoystickButton(driver2, XboxController.Button.kA.value);
-  private final JoystickButton leftBumper = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton limeLightDriveButton = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton rightTrigger = new JoystickButton(driver2, 3);
-  private final JoystickButton hangarmUpButton = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton hangarmDownButton = new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton x2Button = new JoystickButton(driver2, XboxController.Button.kX.value);
-
   /* Driver Buttons */
-  private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kStart.value);
 
-  // private final SendableChooser<String> chooserColor;
-  // private final SendableChooser<String> chooserTarget;
+
 
   private final JoystickButton slowSpeed = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
   private final JoystickButton turbo = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
-  private final POVButton hangarmLeftDown = new POVButton(driver, 270, 0);
-  private final POVButton hangarmRightDown = new POVButton(driver, 90, 0);
-
   /* Subsystems */
 
-private String thingthing;
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
 
@@ -90,21 +72,23 @@ private String thingthing;
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                               () -> drive.getRawAxis(translationAxis),
                                                               () -> drive.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(drive::getRightX).
-                                                              deadband(0.1).
-                                                              scaleTranslation(1.2).
-                                                              allianceRelativeControl(true);
+                                                              .withControllerRotationAxis(drive::getRightX)
+                                                              .deadband(0.1)
+                                                              .scaleTranslation(1.2)
+                                                              .allianceRelativeControl(true);
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
                                         withControllerHeadingAxis(drive::getRightX, drive::getRightY).
                                         headingWhile(true);
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
