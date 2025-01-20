@@ -87,7 +87,7 @@ public class RobotContainer {
      
     //neo seriall num 317B6CA
     // Configure the trigger bindings
-    configureBindings();
+    // configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     
   }
@@ -115,17 +115,17 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
+  // private void configureBindings() {
+  //   // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+  //   // new Trigger(m_exampleSubsystem::exampleCondition)
+  //   //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    aButton.whileTrue(c_GroundIntake);
-    leftBumper.whileTrue(c_GroundOuttake);
-  }
+  //   // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+  //   // cancelling on release.
+  //   // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+  //   aButton.whileTrue(c_GroundIntake);
+  //   leftBumper.whileTrue(c_GroundOuttake);
+  // }
 
   public void teleopInit() { }
   /**

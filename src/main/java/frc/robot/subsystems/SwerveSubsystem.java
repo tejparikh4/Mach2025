@@ -182,18 +182,8 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }
-  public static Rotation2d getGyRotation2d(){
-    return pigeon.getRotation2d();
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+  // public static Rotation2d getGyRotation2d(){
+  //   return pigeon.getRotation2d();
+  // }
 
 }
