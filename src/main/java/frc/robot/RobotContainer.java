@@ -40,9 +40,23 @@ public class RobotContainer {
   private final CommandPS4Controller drive = new CommandPS4Controller(0);
   
   /* Drive Controls */
-  private final int translationAxis = PS4Controller.Axis.kLeftY.value;
-  private final int strafeAxis = PS4Controller.Axis.kLeftX.value;
-  private final int rotationAxis = PS4Controller.Axis.kRightX.value;
+  private final int translationAxis = XboxController.Axis.kLeftY.value;
+  private final int strafeAxis = XboxController.Axis.kLeftX.value;
+  private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+  private final POVButton dPad_Right = new POVButton(driver2, 90, 0);
+  private final POVButton dPad_Top = new POVButton(driver2, 0, 0);
+  private final POVButton dPad_Left = new POVButton(driver2, 270, 0);
+  private final POVButton dPad_Down = new POVButton(driver2, 180);
+  private final JoystickButton aButton = new JoystickButton(driver2, XboxController.Button.kA.value);
+  private final JoystickButton leftBumper = new JoystickButton(driver2, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton limeLightDriveButton = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton rightTrigger = new JoystickButton(driver2, 3);
+  private final JoystickButton hangarmUpButton = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton hangarmDownButton = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton x2Button = new JoystickButton(driver2, XboxController.Button.kX.value);
+
   /* Driver Buttons */
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kStart.value);
 
@@ -57,11 +71,7 @@ public class RobotContainer {
   private final POVButton hangarmRightDown = new POVButton(driver, +90, 0);
 
   /* Subsystems */
-  public final Conveyor s_Conveyor = new Conveyor();
 
-  // /* Commands */
-  public final GroundIntake c_GroundIntake = new GroundIntake(s_Conveyor);
-  public final GroundOuttake c_GroundOuttake = new GroundOuttake(s_Conveyor);
 private String thingthing;
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
@@ -72,6 +82,7 @@ private String thingthing;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     String rioSerialNum = RobotController.getSerialNumber();
   
      // find serial number of kraken roborio and update this line
@@ -87,13 +98,13 @@ private String thingthing;
                                                               () -> drive.getRawAxis(strafeAxis))
                                                               .withControllerRotationAxis(drive::getRightX).
                                                               deadband(0.01).
-                                                              scaleTranslation(1.8).
+                                                              scaleTranslation(1.2).
                                                               allianceRelativeControl(true);
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
                                         withControllerHeadingAxis(drive::getRightX, drive::getRightY).
                                         headingWhile(true);
-  Command driveFieldOrientedDriectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
   Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -112,6 +123,8 @@ private String thingthing;
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    aButton.whileTrue(c_GroundIntake);
+    leftBumper.whileTrue(c_GroundOuttake);
   }
 
   public void teleopInit() { }

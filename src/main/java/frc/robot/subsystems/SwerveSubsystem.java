@@ -26,6 +26,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 // import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -64,14 +65,17 @@ public class SwerveSubsystem extends SubsystemBase {
     double maximumSpeed = Units.feetToMeters(4.5);
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"Swerve_neo");
     private final SwerveDrive swerveDrive;
-    private static Pigeon2 pigeon;
+
+    SlewRateLimiter xLimiter = new SlewRateLimiter(0.1);
+    SlewRateLimiter yLimiter = new SlewRateLimiter(0.1);
+    SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.1);
+
     public SwerveSubsystem(){try
     {
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
-
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -94,14 +98,15 @@ public class SwerveSubsystem extends SubsystemBase {
                               DoubleSupplier headingY)
   {
     return run(() -> {
-      double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
-      double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+      double xInput = Math.pow(translationX.getAsDouble(), 1); // Smooth controll out
+      double yInput = Math.pow(translationY.getAsDouble(), 1); // Smooth controll out
   // Make the robot move
       swerveDrive.driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
                                                                       swerveDrive.getYaw().getRadians(),
                                                                       swerveDrive.getMaximumChassisVelocity()));
+      swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
     });
   }
 
