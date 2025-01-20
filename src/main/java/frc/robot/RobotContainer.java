@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
@@ -58,10 +59,8 @@ public class RobotContainer {
   private final JoystickButton x2Button = new JoystickButton(driver2, XboxController.Button.kX.value);
 
   /* Driver Buttons */
-  private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kStart.value);
 
-  // private final SendableChooser<String> chooserColor;
-  // private final SendableChooser<String> chooserTarget;
+
 
   private final JoystickButton slowSpeed = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
@@ -72,7 +71,6 @@ public class RobotContainer {
 
   /* Subsystems */
 
-private String thingthing;
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
 
@@ -91,21 +89,23 @@ private String thingthing;
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                               () -> drive.getRawAxis(translationAxis),
                                                               () -> drive.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(drive::getRightX).
-                                                              deadband(0.01).
-                                                              scaleTranslation(1.2).
-                                                              allianceRelativeControl(true);
+                                                              .withControllerRotationAxis(drive::getRightX)
+                                                              .deadband(0.1)
+                                                              .scaleTranslation(1.2)
+                                                              .allianceRelativeControl(true);
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
                                         withControllerHeadingAxis(drive::getRightX, drive::getRightY).
                                         headingWhile(true);
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]

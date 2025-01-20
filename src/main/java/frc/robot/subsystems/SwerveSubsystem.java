@@ -59,31 +59,31 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
    * Swerve drive object."
    */
-
-  /** Creates a new ExampleSubsystem. */
   
     double maximumSpeed = Units.feetToMeters(4.5);
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"Swerve_neo");
     private final SwerveDrive swerveDrive;
 
-    SlewRateLimiter xLimiter = new SlewRateLimiter(0.1);
-    SlewRateLimiter yLimiter = new SlewRateLimiter(0.1);
-    SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.1);
+    SlewRateLimiter xLimiter = new SlewRateLimiter(0.01);
+    SlewRateLimiter yLimiter = new SlewRateLimiter(0.01);
+    SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.01);
+
 
     public SwerveSubsystem(){try
     {
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
-                                                                  new Pose2d(new Translation2d(Meter.of(1),
+                                                                  new Pose2d(new Translation2d(Meter.of(1), // WHY?????
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
+      // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
+      swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
+
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
     {
       throw new RuntimeException(e);
-    }
-    pigeon = new Pigeon2(13);
-  }
+    }}
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
@@ -127,8 +127,48 @@ public class SwerveSubsystem extends SubsystemBase {
                         angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
+
+
     });
   }
+
+
+  /**
+   * Command to drive the robot using translative values and heading as a setpoint.
+   *
+   * @param translationX Translation in the X direction.
+   * @param translationY Translation in the Y direction.
+   * @param headingX     Heading X to calculate angle of the joystick.
+   * @param headingY     Heading Y to calculate angle of the joystick.
+   * @return Drive command.
+   */
+  // public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+  //                             DoubleSupplier headingY)
+  // {
+  //   return run(() -> {
+  //     double xInput = Math.pow(translationX.getAsDouble(), 1); // Smooth controll out
+  //     double yInput = Math.pow(translationY.getAsDouble(), 1); // Smooth controll out
+  // // Make the robot move
+  //     swerveDrive.driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
+  //                                                                     headingX.getAsDouble(),
+  //                                                                     headingY.getAsDouble(),
+  //                                                                     swerveDrive.getYaw().getRadians(),
+  //                                                                     swerveDrive.getMaximumChassisVelocity()));
+  //     swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
+  //   });
+  // }
+
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    // This method will be called once per scheduler run during simulation
+  }
+
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
   }
