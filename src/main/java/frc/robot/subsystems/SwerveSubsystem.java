@@ -16,9 +16,14 @@ import frc.robot.Constants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 // Line 21 and 22 are not part of the library anymore
@@ -68,6 +73,9 @@ public class SwerveSubsystem extends SubsystemBase {
     SlewRateLimiter yLimiter = new SlewRateLimiter(0.01);
     SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.01);
 
+    // PigeonIMU gyro;
+    private PigeonIMU gyro = new PigeonIMU(35); /* example Pigeon with device ID 0 */
+
 
     public SwerveSubsystem(){try
     {
@@ -83,7 +91,12 @@ public class SwerveSubsystem extends SubsystemBase {
     } catch (Exception e)
     {
       throw new RuntimeException(e);
-    }}
+    }
+
+    // gyro = (PigeonIMU) swerveDrive.getGyro().getIMU();
+
+    setupPathPlanner();
+  }
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
@@ -185,5 +198,102 @@ public class SwerveSubsystem extends SubsystemBase {
   // public static Rotation2d getGyRotation2d(){
   //   return pigeon.getRotation2d();
   // }
+  public Pose2d getPose()
+  {
+    return swerveDrive.getPose();
+  }
 
+  public void resetOdometry(Pose2d initialHolonomicPose)
+  {
+    swerveDrive.resetOdometry(initialHolonomicPose);
+  }
+
+  public ChassisSpeeds getRobotVelocity()
+  {
+    return swerveDrive.getRobotVelocity();
+  }
+
+  public void setupPathPlanner()
+  {
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    RobotConfig config;
+    try
+    {
+      config = RobotConfig.fromGUISettings();
+
+      final boolean enableFeedforward = true;
+      // Configure AutoBuilder last
+      AutoBuilder.configure(
+          this::getPose,
+          // Robot pose supplier
+          this::resetOdometry,
+          // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotVelocity,
+          // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speedsRobotRelative, moduleFeedForwards) -> {
+            if (enableFeedforward)
+            {
+              swerveDrive.drive(
+                  speedsRobotRelative,
+                  swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                  moduleFeedForwards.linearForces()
+                               );
+            } else
+            {
+              swerveDrive.setChassisSpeeds(speedsRobotRelative);
+            }
+          },
+          // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+          new PPHolonomicDriveController(
+              // PPHolonomicController is the built in path following controller for holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0),
+              // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0)
+              // Rotation PID constants
+          ),
+          config,
+          // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent())
+            {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this
+          // Reference to this subsystem to set requirements
+                           );
+
+    } catch (Exception e)
+    {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
+    //Preload PathPlanner Path finding
+    // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
+    PathfindingCommand.warmupCommand().schedule();
+  }
+
+  public Command getAutonomousCommand(String pathName)
+  {
+    // Create a path following command using AutoBuilder. This will also trigger event markers.
+    return new PathPlannerAuto(pathName);
+  }
+
+  public void zeroGyro() {
+    setGyro(0);
+  }
+
+  public void setGyro(double angle) {
+    gyro.setYaw(angle);
+    gyro.setFusedHeading(angle);
+
+  }
 }
