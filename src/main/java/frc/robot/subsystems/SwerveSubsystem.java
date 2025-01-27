@@ -96,6 +96,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // gyro = (PigeonIMU) swerveDrive.getGyro().getIMU();
 
     setupPathPlanner();
+    swerveDrive.setAutoCenteringModules(true);
   }
 
   /**
@@ -284,6 +285,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command getAutonomousCommand(String pathName)
   {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
+
     return new PathPlannerAuto(pathName);
   }
 
@@ -295,5 +297,9 @@ public class SwerveSubsystem extends SubsystemBase {
     gyro.setYaw(angle);
     gyro.setFusedHeading(angle);
 
+  }
+
+  public void stopAutoCentering() {
+    swerveDrive.setAutoCenteringModules(false);
   }
 }

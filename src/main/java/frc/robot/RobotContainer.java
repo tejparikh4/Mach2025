@@ -101,7 +101,9 @@ public class RobotContainer {
     controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
   }
 
-  public void teleopInit() { }
+  public void teleopInit() {
+      drivebase.stopAutoCentering();
+   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
