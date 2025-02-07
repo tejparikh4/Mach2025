@@ -38,6 +38,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -84,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
       // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
-      swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
+      // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
 
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
@@ -96,7 +97,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // gyro = (PigeonIMU) swerveDrive.getGyro().getIMU();
 
     setupPathPlanner();
-    swerveDrive.setAutoCenteringModules(true);
+    // swerveDrive.setAutoCenteringModules(true);
   }
 
   /**
@@ -233,11 +234,16 @@ public class SwerveSubsystem extends SubsystemBase {
           this::getRobotVelocity,
           // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speedsRobotRelative, moduleFeedForwards) -> {
+            SwerveModuleState[] targetStates = swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative);
+            SwerveModuleState[] currentStates = swerveDrive.getStates();
+            for (int i = 0; i < 4; i++) {
+              targetStates[i].optimize(currentStates[i].angle);
+            }
             if (enableFeedforward)
             {
               swerveDrive.drive(
                   speedsRobotRelative,
-                  swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                  targetStates,
                   moduleFeedForwards.linearForces()
                                );
             } else
@@ -248,7 +254,7 @@ public class SwerveSubsystem extends SubsystemBase {
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
+              new PIDConstants(9.0, 0.0, 0.0),
               // Translation PID constants
               new PIDConstants(5.0, 0.0, 0.0)
               // Rotation PID constants
@@ -279,7 +285,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
-    PathfindingCommand.warmupCommand().schedule();
+    //  PathfindingCommand.warmupCommand().schedule();
   }
 
   public Command getAutonomousCommand(String pathName)

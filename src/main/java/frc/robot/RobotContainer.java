@@ -49,7 +49,7 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
-
+  private final Arm m_arm = new Arm();
 
 
 
@@ -62,7 +62,7 @@ public class RobotContainer {
      
     //neo seriall num 317B6CA
     // Configure the trigger bindings
-    // configureBindings();
+     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     
   }
@@ -99,6 +99,8 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    controller.L2().onTrue(m_arm.rotate(() -> controller.getL2Axis()));
+    controller.R2().onTrue(m_arm.rotate(() -> -controller.getR2Axis()));
   }
 
   public void teleopInit() {

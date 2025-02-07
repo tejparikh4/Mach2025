@@ -14,7 +14,8 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final float maxSpeed = 0.5f;
+  public static final float maxSpeed = 1f;
+public static final int armId = 0;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
