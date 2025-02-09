@@ -6,7 +6,7 @@
   "absoluteEncoderOffset": -258,
   "drive": {
     "type": "talonfx",
-    "id": 8,
+    "id": 3,
     "canbus": 0
   },
   "inverted": {
