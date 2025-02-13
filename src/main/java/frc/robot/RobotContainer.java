@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import swervelib.SwerveInputStream;
@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  */
 public class RobotContainer {
 
-  private final CommandPS4Controller controller = new CommandPS4Controller(0);
+  private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
   
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -49,7 +49,8 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
-  private final Arm m_arm = new Arm();
+  private final Arm arm = new Arm();
+  private final Elevator elevator = new Elevator();
 
 
 
@@ -99,8 +100,9 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    controller.L2().onTrue(m_arm.rotate(() -> controller.getL2Axis()));
-    controller.R2().onTrue(m_arm.rotate(() -> -controller.getR2Axis()));
+    controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
+    controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
+    controller.circle().onTrue(elevator.moveToHeight(0));
   }
 
   public void teleopInit() {

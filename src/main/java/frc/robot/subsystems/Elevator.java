@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,9 +23,12 @@ public class Elevator extends SubsystemBase{
         rightController = rightMotor.getClosedLoopController();
     }
 
-    public void moveToHeight(double height){
-        leftController.setReference(height / Constants.elevatorConstant, SparkBase.ControlType.kPosition);
-        rightController.setReference(height / Constants.elevatorConstant, SparkBase.ControlType.kPosition);
+    public Command moveToHeight(double height){
+        double rotations = 1; //height / (Constants.kElevatorGearDiameter * Math.PI) * Constants.kElevatorGearRatio;
+        return run(() -> {
+            leftController.setReference(rotations, SparkBase.ControlType.kPosition);
+            rightController.setReference(rotations, SparkBase.ControlType.kPosition);
+        });
     }
     
 }
