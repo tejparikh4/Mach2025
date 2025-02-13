@@ -307,4 +307,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public void stopAutoCentering() {
     swerveDrive.setAutoCenteringModules(false);
   }
+
+  public void checkOdometry(Pose2d postion, double timeStamp){
+    Pose2d currPose = swerveDrive.getPose();
+    
+  }
 }
