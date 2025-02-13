@@ -66,8 +66,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * Swerve drive object."
    */
   
-    double maximumSpeed = Units.feetToMeters(4.5);
-    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"Swerve_neo");
+    File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve_kraken");
     private final SwerveDrive swerveDrive;
 
     SlewRateLimiter xLimiter = new SlewRateLimiter(0.01);
