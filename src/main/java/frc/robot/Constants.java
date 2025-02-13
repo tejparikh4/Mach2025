@@ -16,6 +16,9 @@ public final class Constants {
 
   public static final float maxSpeed = 1f;
   public static final int armId = 0;
+  public static final double elevatorConstant = 110.4;
+  public static final int elevatorLeftId = 13;//not the right one yet
+  public static final int elevatorRightId = 14;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
