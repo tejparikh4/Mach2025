@@ -48,7 +48,7 @@ public class RobotContainer {
   /* Subsystems */
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  // private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
 
@@ -64,24 +64,24 @@ public class RobotContainer {
     //neo seriall num 317B6CA
     // Configure the trigger bindings
      configureBindings();
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    // drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     
   }
   
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                              () -> -controller.getRawAxis(translationAxis),
-                                                              () -> -controller.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(() -> -controller.getRightX())
-                                                              .deadband(0.1)
-                                                              .scaleTranslation(1.2)
-                                                              .allianceRelativeControl(true);
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  // SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+  //                                                             () -> -controller.getRawAxis(translationAxis),
+  //                                                             () -> -controller.getRawAxis(strafeAxis))
+  //                                                             .withControllerRotationAxis(() -> -controller.getRightX())
+  //                                                             .deadband(0.1)
+  //                                                             .scaleTranslation(1.2)
+  //                                                             .allianceRelativeControl(true);
+  // Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
 
-  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
-                                        withControllerHeadingAxis(controller::getRightX, controller::getRightY).
-                                        headingWhile(true);
-  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  // SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
+  //                                       withControllerHeadingAxis(controller::getRightX, controller::getRightY).
+  //                                       headingWhile(true);
+  // Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
@@ -99,14 +99,15 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    // controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
-    controller.circle().onTrue(elevator.moveToHeight(0));
+    controller.cross().whileTrue(elevator.setSpeed(0.3));
+    controller.circle().whileTrue(elevator.setSpeed(-0.3));
   }
 
   public void teleopInit() {
-      drivebase.stopAutoCentering();
+      // drivebase.stopAutoCentering();
    }
 
   /**
@@ -114,9 +115,9 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand()
-  {
-    // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("fuck");
-  }
+  // public Command getAutonomousCommand()
+  // {
+  //   // An example command will be run in autonomous
+  // return drivebase.getAutonomousCommand("fuck");
+  // }
 }
