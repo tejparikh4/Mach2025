@@ -50,9 +50,10 @@ public class Elevator extends SubsystemBase{
     public Command moveToHeight(double height){
         // controller.setGoal(height);
         return run(() -> {
-            voltage = feedForward.calculate(profile.calculate(5, new TrapezoidProfile.State(0, 0), new TrapezoidProfile.State(5, 0));
-            );
-            
+            double velocity = profile.calculate(1, ground, L1).velocity;
+            voltage = feedForward.calculate(velocity);
+
+
             
             // controller.calculate(
             //         leftMotor.getAbsoluteEncoder().getPosition())            
