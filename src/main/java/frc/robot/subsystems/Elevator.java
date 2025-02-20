@@ -27,7 +27,7 @@ public class Elevator extends SubsystemBase{
     private static double kG = 1.2;
     private static double kV = 1.3;
     private final TrapezoidProfile.Constraints m_Constraints = new TrapezoidProfile.Constraints(1.5, 0.75);
-    private final ProfiledPIDController m_Controller = new ProfiledPIDController(kP, kI, kD, m_Constraints);
+    private final ProfiledPIDController m_Controller = new ProfiledPIDController(kP, kI, kD, m_Constraints,kDt);
     private final ElevatorFeedforward m_Feedforward =  new ElevatorFeedforward(kS, kG, kV);
     public Elevator() {
         leftMotor = new SparkMax(Constants.elevatorLeftId, MotorType.kBrushless);
@@ -41,6 +41,11 @@ public class Elevator extends SubsystemBase{
         m_Controller.setGoal(height);
         return run(() -> leftMotor.setVoltage(m_Controller.calculate(leftMotor.getAbsoluteEncoder().getPosition())+m_Feedforward.calculate(m_Controller.getSetpoint().velocity)));
 
+    }
+    @Override
+    public void periodic(){
+        leftMotor.setVoltage(m_Controller.calculate(leftMotor.getAbsoluteEncoder().getPosition())+m_Feedforward.calculate(m_Controller.getSetpoint().velocity));
+        
     }
     
     
