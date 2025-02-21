@@ -38,11 +38,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class RobotContainer {
 
   private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
-  
+  private final Joystick control = new Joystick(Constants.kDriverControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+  private final JoystickButton x = new JoystickButton(control,  XboxController.Button.kX.value);
+  private final JoystickButton y = new JoystickButton(control,  XboxController.Button.kY.value);
 
 
   /* Subsystems */
@@ -102,8 +105,11 @@ public class RobotContainer {
     // controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
-    controller.cross().whileTrue(elevator.setSpeed(0.3));
-    controller.circle().whileTrue(elevator.setSpeed(-0.3));
+    // controller.cross().whileTrue(elevator.setSpeed(0.3));
+    // controller.circle().whileTrue(elevator.setSpeed(-0.3));
+    x.whileTrue(elevator.moveToHeight(0.2));
+    y.whileTrue(elevator.moveToHeight(0));
+
   }
 
   public void teleopInit() {

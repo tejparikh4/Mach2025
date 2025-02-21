@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase{
     // private static double kD = 0.7;
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
-
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     private final TrapezoidProfile.State ground = new TrapezoidProfile.State(0, 0);
     private final TrapezoidProfile.State L1 = new TrapezoidProfile.State(10, 0);
     private final TrapezoidProfile.State L2 = new TrapezoidProfile.State(20, 0);
@@ -49,14 +49,17 @@ public class Elevator extends SubsystemBase{
 
     public Command moveToHeight(double height){
         // controller.setGoal(height);
-        return run(() -> {
-            double velocity = profile.calculate(1, ground, L1).velocity;
-            voltage = feedForward.calculate(velocity);
+        setpoint = profile.calculate(1, ground, new TrapezoidProfile.State(height,0));
+        return startEnd(() -> {
+            setpoint = profile.calculate(0.2, setpoint, new TrapezoidProfile.State(height,0));
+            // voltage = feedForward.calculate(velocity);
 
-
-            
-            // controller.calculate(
-            //         leftMotor.getAbsoluteEncoder().getPosition())            
+            voltage = feedForward.calculateWithVelocities(leftMotor.getEncoder().getVelocity(), setpoint.velocity);
+            leftMotor.setVoltage(voltage);
+            rightMotor.setVoltage(-voltage);
+        },()->{
+            leftMotor.setVoltage(0);
+            rightMotor.setVoltage(0);
         });
     }
 
