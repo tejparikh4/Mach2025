@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -44,8 +45,6 @@ public class RobotContainer {
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-  private final JoystickButton x = new JoystickButton(control,  XboxController.Button.kX.value);
-  private final JoystickButton y = new JoystickButton(control,  XboxController.Button.kY.value);
 
 
   /* Subsystems */
@@ -95,20 +94,25 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
+  
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     // controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
-    // controller.cross().whileTrue(elevator.setSpeed(0.3));
-    // controller.circle().whileTrue(elevator.setSpeed(-0.3));
-    x.whileTrue(elevator.moveToHeight(0.2));
-    y.whileTrue(elevator.moveToHeight(0));
+
+
+    controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
+    controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
+
+    controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
+    controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
+
+
+    controller.pov(0).whileTrue(elevator.setSpeed(5));
+    controller.pov(180).whileTrue(elevator.setSpeed(-5));
+
+    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
+    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
   }
 
