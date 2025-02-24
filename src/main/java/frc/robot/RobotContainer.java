@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
 import java.util.Dictionary;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -45,12 +45,16 @@ public class RobotContainer {
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
+  private final JoystickButton x = new JoystickButton(control,  XboxController.Button.kX.value);
+  private final JoystickButton y = new JoystickButton(control,  XboxController.Button.kY.value);
+
+  private final SendableChooser<String> chooserJoystick;
 
 
   /* Subsystems */
 
   // The robot's subsystems and commands are defined here...
-  // private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
 
@@ -58,6 +62,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    chooserJoystick = new SendableChooser<String>();
+    chooserJoystick.setDefaultOption("PLaystation", "Playstation"); 
+    chooserJoystick.addOption("Logitech", "logitech");
+    chooserJoystick.addOption("Xbox", "Xbox");
+    
 
     String rioSerialNum = RobotController.getSerialNumber();
   
@@ -66,24 +75,25 @@ public class RobotContainer {
     //neo seriall num 317B6CA
     // Configure the trigger bindings
      configureBindings();
-    // drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+     
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     
   }
   
-  // SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-  //                                                             () -> -controller.getRawAxis(translationAxis),
-  //                                                             () -> -controller.getRawAxis(strafeAxis))
-  //                                                             .withControllerRotationAxis(() -> -controller.getRightX())
-  //                                                             .deadband(0.1)
-  //                                                             .scaleTranslation(1.2)
-  //                                                             .allianceRelativeControl(true);
-  // Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                              () -> -control.getRawAxis(translationAxis),
+                                                              () -> -control.getRawAxis(strafeAxis))
+                                                              .withControllerRotationAxis(() -> -control.getRawAxis(rotationAxis))
+                                                              .deadband(0.1)
+                                                              .scaleTranslation(1.2)
+                                                              .allianceRelativeControl(true);
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
 
-  // SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
-  //                                       withControllerHeadingAxis(controller::getRightX, controller::getRightY).
-  //                                       headingWhile(true);
-  // Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
+                                        withControllerHeadingAxis(getRightX(), getRightY()).
+                                        headingWhile(true);
+  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
@@ -94,26 +104,22 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-  
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // cancelling on release.
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // controller.`triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
-
-
-    controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
-    controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
-
-    controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
-    controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
-
-
-    controller.pov(0).whileTrue(elevator.setSpeed(5));
-    controller.pov(180).whileTrue(elevator.setSpeed(-5));
-
-    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
-    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
-
+    // controller.cross().whileTrue(elevator.setSpeed(0.3));
+    // controller.circle().whileTrue(elevator.setSpeed(-0.3));
+    x.whileTrue(elevator.setSpeed(0.2));
+    y.whileTrue(elevator.setSpeed(-0.2));
+//change code to use playstation and not command playstation. then make motor value variables for code
+//sorry this comment is so bad i had like 10 secs - mark twain
   }
 
   public void teleopInit() {
@@ -130,4 +136,12 @@ public class RobotContainer {
   //   // An example command will be run in autonomous
   // return drivebase.getAutonomousCommand("fuck");
   // }
+
+  public DoubleSupplier getRightX() {
+    return () -> {return control.getRawAxis(rotationAxis);};
+  }
+
+  public DoubleSupplier getRightY() {
+    return () -> {return control.getRawAxis(XboxController.Axis.kRightY.value);};
+  }
 }
