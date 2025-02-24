@@ -26,6 +26,7 @@ public class Arm extends SubsystemBase {
       // intakeMotor2 = new SparkMax(Constants.intakeMotor2Id, MotorType.kBrushless);
       // colorSensor = new TCS34725ColorSensor();
    }
+
    public Command rotate(DoubleSupplier speedDoubleSupplier){
          return run(() -> { ArmMotor.set(speedDoubleSupplier.getAsDouble());});
    }
@@ -38,7 +39,9 @@ public class Arm extends SubsystemBase {
    public Command outake(Double speeDouble, int behavior){
       //We Set the feedforward for the appropriate behavior that is assigned
       //
-      return run(()->new InstantCommand());
+      return run(() -> {
+         
+      });
    }
 
 }
