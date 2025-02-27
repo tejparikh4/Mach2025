@@ -36,6 +36,7 @@ public class Arm extends SubsystemBase {
    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
    private TrapezoidProfile.State lastSetpoint = new TrapezoidProfile.State();
 
+   private double setToVoltage = 0;
    public Arm() {
       ArmMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
       intakeMotortop = new SparkMax(Constants.intakeMotortopId, MotorType.kBrushless);
@@ -91,6 +92,20 @@ public class Arm extends SubsystemBase {
       });
 
    }
+   public Command setArmSpeed() {
+      return startEnd(() ->{
+ArmMotor.setVoltage(setToVoltage);
+      }, () -> {
+ArmMotor.setVoltage(setToVoltage);
+      }
+
+      );
+   }
+
+   public void changeArmSpeed(double delta) {
+      setToVoltage += delta;
+  }
+
 
    public Command outtake(double outtakeSpeed) {
       return run(() -> {
@@ -99,3 +114,4 @@ public class Arm extends SubsystemBase {
       });
    }
 }
+
