@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -11,14 +10,10 @@ import frc.robot.TCS34725ColorSensor;
 import frc.robot.TCS34725ColorSensor.TCSColor;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
@@ -31,9 +26,8 @@ public class Arm extends SubsystemBase {
    private double kG = 0;
    private double kV = 0;
    private double startTime;
-   private static double kDt = 0.02;
-   private static double kMaxVelocity = 1.75;
-   private static double kMaxAcceleration = 0.75;
+   private static double kMaxVelocity = (32* Math.PI);
+   private static double kMaxAcceleration = (16 * Math.PI);
    private TCS34725ColorSensor colorSensor;
    private TCSColor color = colorSensor.readColors();
    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity,
@@ -41,7 +35,6 @@ public class Arm extends SubsystemBase {
    private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
    private TrapezoidProfile.State lastSetpoint = new TrapezoidProfile.State();
-   private final TrapezoidProfile.State ground = new TrapezoidProfile.State(0, 0);
 
    public Arm() {
       ArmMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
@@ -54,6 +47,7 @@ public class Arm extends SubsystemBase {
    private final ArmFeedforward feedForward = new ArmFeedforward(kS, kG, kV);
 
    public Command rotate(DoubleSupplier speedDoubleSupplier) {
+   
       return run(() -> {
          ArmMotor.set(speedDoubleSupplier.getAsDouble());
       });
