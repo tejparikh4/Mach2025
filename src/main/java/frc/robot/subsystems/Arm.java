@@ -11,58 +11,97 @@ import frc.robot.TCS34725ColorSensor;
 import frc.robot.TCS34725ColorSensor.TCSColor;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class Arm extends SubsystemBase {
    private SparkMax ArmMotor;
-   // private SparkMax intakeMotor1;
-   // private SparkMax intakeMotor2;
+   private RelativeEncoder ArmEncoder;
+   private double voltage = 0;
+   private SparkMax intakeMotortop;
+   private SparkMax intakeMotorbottom;
    private double kS = 0;
    private double kG = 0;
    private double kV = 0;
    private double startTime;
-   // private TCS34725ColorSensor colorSensor;
-   // private TCSColor color = colorSensor.readColors();
-   private ArmFeedforward feedforward = new ArmFeedforward(kS, kG, kV);
-   private ProfiledPIDController controller = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0), 0.01);
-   public Arm(){
-      // ArmMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
-      // intakeMotor1 = new SparkMax(Constants.intakeMotor1Id, MotorType.kBrushless);
-      // intakeMotor2 = new SparkMax(Constants.intakeMotor2Id, MotorType.kBrushless);
-      // colorSensor = new TCS34725ColorSensor();
+   private static double kDt = 0.02;
+   private static double kMaxVelocity = 1.75;
+   private static double kMaxAcceleration = 0.75;
+   private TCS34725ColorSensor colorSensor;
+   private TCSColor color = colorSensor.readColors();
+   private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity,
+         kMaxAcceleration);
+   private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
+   private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+   private TrapezoidProfile.State lastSetpoint = new TrapezoidProfile.State();
+   private final TrapezoidProfile.State ground = new TrapezoidProfile.State(0, 0);
+
+   public Arm() {
+      ArmMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
+      intakeMotortop = new SparkMax(Constants.intakeMotortopId, MotorType.kBrushless);
+      intakeMotorbottom = new SparkMax(Constants.intakeMotorbottomId, MotorType.kBrushless);
+      colorSensor = new TCS34725ColorSensor();
+      ArmEncoder = ArmMotor.getEncoder();
    }
 
-   public Command rotate(DoubleSupplier speedDoubleSupplier){
-         return run(() -> { ArmMotor.set(speedDoubleSupplier.getAsDouble());});
-   }
-   // public Command intake(Double speedDouble){
-   //    if(!color.equals(new TCSColor(0, 0, 0, 0))){
-   //       return run(() ->{intakeMotor1.set(speedDouble);});
-   //    }
-   //    return run(() ->{intakeMotor1.set(0);});
-   // }
-   public Command outake(Double speeDouble, int behavior){
-      //We Set the feedforward for the appropriate behavior that is assigned
-      //
-      return startRun(() -> {
-         controller.setGoal(5);
-      },
-      () -> {
-         RelativeEncoder encoder = ArmMotor.getEncoder();
-         double output = controller.calculate(encoder.getPosition()) + feedforward.calculate(encoder.getPosition(), encoder.getVelocity());
-         ArmMotor.setVoltage(output);
-      }).finallyDo(() -> {
-         ArmMotor.setVoltage(0);
-         // intakeMotor1.set(speeDouble);
-         // intakeMotor2.set(speeDouble);
+   private final ArmFeedforward feedForward = new ArmFeedforward(kS, kG, kV);
+
+   public Command rotate(DoubleSupplier speedDoubleSupplier) {
+      return run(() -> {
+         ArmMotor.set(speedDoubleSupplier.getAsDouble());
       });
    }
 
+   public Command intake(Double speedDouble) {
+      if (!color.equals(new TCSColor(0, 0, 0, 0))) {
+         return run(() -> {
+            intakeMotorbottom.set(speedDouble);
+            intakeMotortop.set(-speedDouble);
+         });
+
+      }
+      return run(() -> {
+         intakeMotorbottom.set(0);
+         intakeMotortop.set(0);
+      });
+
+   }
+
+   public Command moveToPositron(double height) {
+      // controller.setGoal(height);
+      return startRun(() -> {
+         startTime = Timer.getFPGATimestamp();
+         // leftMotor.setVoltage(voltage);
+         // rightMotor.setVoltage(-voltage);
+      }, () -> {
+         lastSetpoint = setpoint;
+         setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(0, 0),
+               new TrapezoidProfile.State(height, 0));
+
+         // voltage = feedForward.calculate(velocity);
+         System.out.println("moving to outaking epic style");
+         SmartDashboard.putNumber("target: louis vuiotton", setpoint.velocity);
+         SmartDashboard.putNumber("measured: louis vuiotton", ArmEncoder.getVelocity());
+         voltage = feedForward.calculateWithVelocities(lastSetpoint.position, lastSetpoint.velocity, setpoint.velocity);
+         ArmMotor.setVoltage(voltage);
+      }).finallyDo(() -> {
+         voltage = 0;
+         ArmMotor.setVoltage(0);
+      });
+
+   }
+
+   public Command outtake(double outtakeSpeed) {
+      return run(() -> {
+         intakeMotortop.set(outtakeSpeed);
+         intakeMotorbottom.set(-outtakeSpeed);
+      });
+   }
 }
