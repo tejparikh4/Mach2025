@@ -100,12 +100,14 @@ public class RobotContainer {
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
 
+    controller.cross().whileTrue(elevator.moveToHeight(20));
+    controller.circle().whileTrue(elevator.moveToHeight(0));
 
-    controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
-    controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
+    // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
+    // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
 
-    controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
-    controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
+    // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
+    // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
 
     controller.pov(0).whileTrue(elevator.setSpeed(5));
