@@ -49,8 +49,10 @@ public class Arm extends SubsystemBase {
 
    public Command rotate(DoubleSupplier speedDoubleSupplier) {
    
-      return run(() -> {
+      return startEnd(() -> {
          ArmMotor.set(speedDoubleSupplier.getAsDouble());
+      }, () -> {
+         ArmMotor.set(0);
       });
    }
 
