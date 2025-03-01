@@ -80,9 +80,9 @@ public class Arm extends SubsystemBase {
                new TrapezoidProfile.State(height, 0));
 
          // voltage = feedForward.calculate(velocity);
-         System.out.println("moving to outaking epic style");
-         SmartDashboard.putNumber("target: louis vuiotton", setpoint.velocity);
-         SmartDashboard.putNumber("measured: louis vuiotton", ArmEncoder.getVelocity());
+         System.out.println("moving to outaking");
+         SmartDashboard.putNumber("target Velocity", setpoint.velocity);
+         SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
          voltage = feedForward.calculateWithVelocities(lastSetpoint.position, lastSetpoint.velocity, setpoint.velocity);
          ArmMotor.setVoltage(voltage);
       }).finallyDo(() -> {
