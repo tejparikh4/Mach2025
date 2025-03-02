@@ -51,7 +51,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
-
+  public final LimelightMegatag megaTag2 = new LimelightMegatag(drivebase, "limelight");
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

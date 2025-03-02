@@ -35,9 +35,9 @@ public class LimelightMegatag {
     private final DoubleArrayPublisher limelPublisher = table.getDoubleArrayTopic("llPose").publish();
     private final Rectangle2d fieldBoundary = new Rectangle2d(new Translation2d(0,0),new Translation2d(16.514,8.211));
     // private final RectanglePoseArea fieldBoundry = new RectanglePoseArea()
-    public LimelightMegatag(swervelib.SwerveDrive drivebase, String limelightName){
+    public LimelightMegatag(SwerveSubsystem drivebase, String limelightName){
         this.llName = limelightName;
-        this.drivebase = drivebase;
+        this.drivebase = drivebase.getSwerveDrive();
         LimelightHelpers.setPipelineIndex(limelightName, 0);    
     }
     public void periodic(){
