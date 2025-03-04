@@ -70,7 +70,6 @@ public class LimelightMegatag {
             swerve.checkOdometry(lEstimate.pose,lEstimate.timestampSeconds);
         }else{
             SmartDashboard.putString("Pose Update","Failed");
-             publishToField(new PoseEstimate(new Pose2d(), 0., 0., 0, 0, 0., 0., new RawFiducial[0], true));
         }
     }
     private void publishToField(PoseEstimate lMesurements){
