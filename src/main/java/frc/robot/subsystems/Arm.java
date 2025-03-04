@@ -2,46 +2,138 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.TCS34725ColorSensor;
 import frc.robot.TCS34725ColorSensor.TCSColor;
 import frc.robot.Constants;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class Arm extends SubsystemBase {
-   private SparkMax ArmMotor;
-   private SparkMax intakeMotor1;
-   private SparkMax intakeMotor2;
-   // private TCS34725ColorSensor colorSensor;
-   // private TCSColor color = colorSensor.readColors();
-   public Arm(){
-      // ArmMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
-      // intakeMotor1 = new SparkMax(Constants.intakeMotor1Id, MotorType.kBrushless);
-      // intakeMotor2 = new SparkMax(Constants.intakeMotor2Id, MotorType.kBrushless);
-      // colorSensor = new TCS34725ColorSensor();
+   private SparkMax pivotMotor;
+   private RelativeEncoder ArmEncoder;
+   private double voltage = 0;
+   private SparkMax intakeMotorTop;
+   private SparkMax intakeMotorBottom;
+   private double kS = 0;
+   private double kG = 0;
+   private double kV = 0;
+   private double startTime;
+   private static double kMaxVelocity = (32* Math.PI);
+   private static double kMaxAcceleration = (16 * Math.PI);
+   boolean endIntake = false;
+
+   private TCS34725ColorSensor colorSensor;
+   private TCSColor color;
+   private double colorSum;
+   private boolean isCoral = false;
+   private boolean prevIsCoral = false;
+
+   private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity,
+         kMaxAcceleration);
+   private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
+   private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+   private TrapezoidProfile.State lastSetpoint = new TrapezoidProfile.State();
+
+   public Arm() {
+      // pivotMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
+      intakeMotorTop = new SparkMax(Constants.intakeMotorTopId, MotorType.kBrushless);
+      intakeMotorBottom = new SparkMax(Constants.intakeMotorBottomId, MotorType.kBrushless);
+      colorSensor = new TCS34725ColorSensor();
+      colorSensor.init();
+      // pivotEncoder = pivotMotor.getEncoder();
    }
 
-   public Command rotate(DoubleSupplier speedDoubleSupplier){
-         return run(() -> { ArmMotor.set(speedDoubleSupplier.getAsDouble());});
-   }
-   // public Command intake(Double speedDouble){
-   //    if(!color.equals(new TCSColor(0, 0, 0, 0))){
-   //       return run(() ->{intakeMotor1.set(speedDouble);});
-   //    }
-   //    return run(() ->{intakeMotor1.set(0);});
-   // }
-   public Command outake(Double speeDouble, int behavior){
-      //We Set the feedforward for the appropriate behavior that is assigned
-      //
+   private final ArmFeedforward feedForward = new ArmFeedforward(kS, kG, kV);
+
+   public Command rotate(DoubleSupplier speedDoubleSupplier) {
+   
       return run(() -> {
-         
+         // pivotMotor.set(speedDoubleSupplier.getAsDouble());
       });
    }
 
+   public Command intake(Double speed) {
+      return startRun(() -> {
+         endIntake = false;
+      }, () -> {
+         colorSum = color.getR() + color.getB() + color.getG();
+         if (colorSum > 500) {
+            isCoral = true;
+         } else {
+            isCoral = false;
+         }
+
+         if (!isCoral && prevIsCoral) {
+            endIntake = true;
+         }
+
+         prevIsCoral = isCoral;
+
+         if (endIntake) {
+            intakeMotorTop.set(0);
+            intakeMotorBottom.set(0);
+         } else {
+            intakeMotorTop.set(speed);
+            intakeMotorBottom.set(speed);
+         }
+      });
+      
+
+   }
+
+   public boolean getEndIntake() {
+      return endIntake;
+   }
+
+   public Command moveToPosition(double height) {
+      // controller.setGoal(height);
+      return startRun(() -> {
+         startTime = Timer.getFPGATimestamp();
+         // leftMotor.setVoltage(voltage);
+         // rightMotor.setVoltage(-voltage);
+      }, () -> {
+         lastSetpoint = setpoint;
+         setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(0, 0),
+               new TrapezoidProfile.State(height, 0));
+
+         // voltage = feedForward.calculate(velocity);
+         System.out.println("moving to outaking");
+         SmartDashboard.putNumber("target Velocity", setpoint.velocity);
+         // SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
+         voltage = feedForward.calculateWithVelocities(lastSetpoint.position, lastSetpoint.velocity, setpoint.velocity);
+         // pivotMotor.setVoltage(voltage);
+      }).finallyDo(() -> {
+         voltage = 0;
+         // pivotMotor.setVoltage(0);
+      });
+
+   }
+
+   // positive outtakes
+   public Command outtake(double outtakeSpeed) {
+      return startEnd(() -> {
+         intakeMotorTop.set(outtakeSpeed);
+         intakeMotorBottom.set(outtakeSpeed);
+      }, () -> {
+         intakeMotorTop.set(0);
+         intakeMotorBottom.set(0);
+      });
+   }
+
+   public void periodic() {
+      color = colorSensor.readColors();
+      SmartDashboard.putNumber("red", color.getR());
+      SmartDashboard.putNumber("green", color.getG());
+      SmartDashboard.putNumber("blue", color.getB());
+      SmartDashboard.putNumber("sum", color.getR() + color.getB() + color.getG());
+
+   }
 }

@@ -40,6 +40,8 @@ public class Elevator extends SubsystemBase{
     private RelativeEncoder leftEncoder;
     private RelativeEncoder rightEncoder;
 
+    private double startPos;
+
     private SparkClosedLoopController leftController;
     private SparkClosedLoopController rightController;
     private double voltage = 0;
@@ -130,21 +132,22 @@ public class Elevator extends SubsystemBase{
 
     public Command moveToHeight(double height){
         // controller.setGoal(height);
+        
         return startRun(() -> {
             startTime = Timer.getFPGATimestamp();
-            leftEncoder.setPosition(0);
-            rightEncoder.setPosition(0);
+            startPos = getAverageEncoder();
             // leftMotor.setVoltage(voltage);
             // rightMotor.setVoltage(-voltage);
         },()->{
             lastSetpoint = setpoint;
+
+            // setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height,0));
             setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(0, 0), new TrapezoidProfile.State(height,0));
 
             // voltage = feedForward.calculate(velocity);
             System.out.println("MOVING TO HEIGHT");
-            SmartDashboard.putNumber("targetVel", setpoint.velocity);
-            SmartDashboard.putNumber("measuredVel", leftEncoder.getVelocity());
             voltage = feedForward.calculateWithVelocities(lastSetpoint.velocity, setpoint.velocity);
+
             leftMotor.setVoltage(voltage);
             rightMotor.setVoltage(-voltage);
         }).finallyDo(() -> {
@@ -153,6 +156,12 @@ public class Elevator extends SubsystemBase{
             rightMotor.setVoltage(0);
         });
     }
+
+
+    public double getAverageEncoder() {
+        return (leftEncoder.getPosition() - rightEncoder.getPosition()) / 2;
+    }
+
 
     // positive is raise
     public Command setSpeed() {
@@ -194,7 +203,9 @@ public class Elevator extends SubsystemBase{
     public void periodic(){
         SmartDashboard.putNumber("leftEncoderPos", leftEncoder.getPosition());
         SmartDashboard.putNumber("rightEncoderPos", rightEncoder.getPosition());
-        SmartDashboard.putNumber("setpoint", setpoint.velocity);
+        SmartDashboard.putNumber("leftMeasuredVel", leftEncoder.getVelocity());
+        SmartDashboard.putNumber("rightMeasuredVel", rightEncoder.getVelocity());
+        SmartDashboard.putNumber("setpoint velocity", setpoint.velocity);
         SmartDashboard.putNumber("ff voltage", voltage);
         SmartDashboard.putNumber("setToVoltage", setToVoltage);
     }
