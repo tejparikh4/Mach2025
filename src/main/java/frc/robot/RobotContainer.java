@@ -46,6 +46,8 @@ public class RobotContainer {
 
   private final JoystickButton x = new JoystickButton(control,  XboxController.Button.kX.value);
   private final JoystickButton y = new JoystickButton(control,  XboxController.Button.kY.value);
+  private final JoystickButton a = new JoystickButton(control,  XboxController.Button.kA.value);
+  private final JoystickButton b = new JoystickButton(control,  XboxController.Button.kB.value);
 
   private final SendableChooser<String> chooserJoystick;
 
@@ -110,12 +112,14 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     // controller.`triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
-    controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
+    // controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
+    // controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
     // controller.cross().whileTrue(elevator.setSpeed(0.3));
     // controller.circle().whileTrue(elevator.setSpeed(-0.3));
-    x.whileTrue(elevator.setSpeed(0.2));
-    y.whileTrue(elevator.setSpeed(-0.2));
+    x.whileTrue(elevator.setSpeed(1));
+    y.whileTrue(elevator.setSpeed(-1));
+    a.whileTrue(arm.intake(0.5));
+    b.whileTrue(arm.intake(-0.5));
 //change code to use playstation and not command playstation. then make motor value variables for code
 //sorry this comment is so bad i had like 10 secs - mark twain
   }
