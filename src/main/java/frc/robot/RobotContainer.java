@@ -50,7 +50,7 @@ public class RobotContainer {
   /* Subsystems */
 
   // The robot's subsystems and commands are defined here...
-  // private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
 
@@ -66,24 +66,24 @@ public class RobotContainer {
     //neo seriall num 317B6CA
     // Configure the trigger bindings
      configureBindings();
-    // drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     
   }
   
-  // SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-  //                                                             () -> -controller.getRawAxis(translationAxis),
-  //                                                             () -> -controller.getRawAxis(strafeAxis))
-  //                                                             .withControllerRotationAxis(() -> -controller.getRightX())
-  //                                                             .deadband(0.1)
-  //                                                             .scaleTranslation(1.2)
-  //                                                             .allianceRelativeControl(true);
-  // Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                              () -> -controller.getRawAxis(translationAxis),
+                                                              () -> -controller.getRawAxis(strafeAxis))
+                                                              .withControllerRotationAxis(() -> -controller.getRightX())
+                                                              .deadband(0.1)
+                                                              .scaleTranslation(1.2)
+                                                              .allianceRelativeControl(true);
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
 
-  // SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
-  //                                       withControllerHeadingAxis(controller::getRightX, controller::getRightY).
-  //                                       headingWhile(true);
-  // Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
+                                        withControllerHeadingAxis(controller::getRightX, controller::getRightY).
+                                        headingWhile(true);
+  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
@@ -96,12 +96,13 @@ public class RobotContainer {
   private void configureBindings() {
   
 
-    // controller.triangle().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
 
-    controller.cross().whileTrue(elevator.moveToHeight(20));
-    controller.circle().whileTrue(elevator.moveToHeight(0));
+    controller.cross().whileTrue(elevator.setSpeed(4));
+    controller.circle().whileTrue(elevator.setSpeed(-0.5));
+    controller.square().whileTrue(elevator.setSpeed(0.15));
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
@@ -109,9 +110,10 @@ public class RobotContainer {
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
+    controller.triangle().whileTrue(arm.intake(0.5));
 
-    controller.pov(0).whileTrue(elevator.setSpeed(5));
-    controller.pov(180).whileTrue(elevator.setSpeed(-5));
+    controller.pov(0).whileTrue(arm.outtake(0.5));
+    controller.pov(180).whileTrue(arm.outtake(-.5));
 
     // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
     // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
@@ -127,9 +129,9 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  // public Command getAutonomousCommand()
-  // {
-  //   // An example command will be run in autonomous
-  // return drivebase.getAutonomousCommand("fuck");
-  // }
+  public Command getAutonomousCommand()
+  {
+    // An example command will be run in autonomous
+  return drivebase.getAutonomousCommand("fuck");
+  }
 }

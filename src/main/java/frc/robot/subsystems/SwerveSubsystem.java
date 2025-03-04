@@ -299,9 +299,10 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void setGyro(double angle) {
-    gyro.setYaw(angle);
-    gyro.setFusedHeading(angle);
-
+    // gyro.setYaw(angle);
+    // gyro.setFusedHeading(angle);
+    Pose2d currentPose = getPose();
+    resetOdometry(new Pose2d(currentPose.getX(), currentPose.getY(), new Rotation2d()));
   }
 
   public void stopAutoCentering() {

@@ -17,19 +17,25 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
-   private SparkMax ArmMotor;
+   private SparkMax pivotMotor;
    private RelativeEncoder ArmEncoder;
    private double voltage = 0;
-   private SparkMax intakeMotortop;
-   private SparkMax intakeMotorbottom;
+   private SparkMax intakeMotorTop;
+   private SparkMax intakeMotorBottom;
    private double kS = 0;
    private double kG = 0;
    private double kV = 0;
    private double startTime;
    private static double kMaxVelocity = (32* Math.PI);
    private static double kMaxAcceleration = (16 * Math.PI);
+   boolean endIntake = false;
+
    private TCS34725ColorSensor colorSensor;
-   private TCSColor color = colorSensor.readColors();
+   private TCSColor color;
+   private double colorSum;
+   private boolean isCoral = false;
+   private boolean prevIsCoral = false;
+
    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity,
          kMaxAcceleration);
    private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
@@ -37,11 +43,12 @@ public class Arm extends SubsystemBase {
    private TrapezoidProfile.State lastSetpoint = new TrapezoidProfile.State();
 
    public Arm() {
-      ArmMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
-      intakeMotortop = new SparkMax(Constants.intakeMotortopId, MotorType.kBrushless);
-      intakeMotorbottom = new SparkMax(Constants.intakeMotorbottomId, MotorType.kBrushless);
+      // pivotMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
+      intakeMotorTop = new SparkMax(Constants.intakeMotorTopId, MotorType.kBrushless);
+      intakeMotorBottom = new SparkMax(Constants.intakeMotorBottomId, MotorType.kBrushless);
       colorSensor = new TCS34725ColorSensor();
-      ArmEncoder = ArmMotor.getEncoder();
+      colorSensor.init();
+      // pivotEncoder = pivotMotor.getEncoder();
    }
 
    private final ArmFeedforward feedForward = new ArmFeedforward(kS, kG, kV);
@@ -49,26 +56,44 @@ public class Arm extends SubsystemBase {
    public Command rotate(DoubleSupplier speedDoubleSupplier) {
    
       return run(() -> {
-         ArmMotor.set(speedDoubleSupplier.getAsDouble());
+         // pivotMotor.set(speedDoubleSupplier.getAsDouble());
       });
    }
 
-   public Command intake(Double speedDouble) {
-      if (!color.equals(new TCSColor(0, 0, 0, 0))) {
-         return run(() -> {
-            intakeMotorbottom.set(speedDouble);
-            intakeMotortop.set(-speedDouble);
-         });
+   public Command intake(Double speed) {
+      return startRun(() -> {
+         endIntake = false;
+      }, () -> {
+         colorSum = color.getR() + color.getB() + color.getG();
+         if (colorSum > 500) {
+            isCoral = true;
+         } else {
+            isCoral = false;
+         }
 
-      }
-      return run(() -> {
-         intakeMotorbottom.set(0);
-         intakeMotortop.set(0);
+         if (!isCoral && prevIsCoral) {
+            endIntake = true;
+         }
+
+         prevIsCoral = isCoral;
+
+         if (endIntake) {
+            intakeMotorTop.set(0);
+            intakeMotorBottom.set(0);
+         } else {
+            intakeMotorTop.set(speed);
+            intakeMotorBottom.set(speed);
+         }
       });
+      
 
    }
 
-   public Command moveToPositron(double height) {
+   public boolean getEndIntake() {
+      return endIntake;
+   }
+
+   public Command moveToPosition(double height) {
       // controller.setGoal(height);
       return startRun(() -> {
          startTime = Timer.getFPGATimestamp();
@@ -82,20 +107,33 @@ public class Arm extends SubsystemBase {
          // voltage = feedForward.calculate(velocity);
          System.out.println("moving to outaking");
          SmartDashboard.putNumber("target Velocity", setpoint.velocity);
-         SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
+         // SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
          voltage = feedForward.calculateWithVelocities(lastSetpoint.position, lastSetpoint.velocity, setpoint.velocity);
-         ArmMotor.setVoltage(voltage);
+         // pivotMotor.setVoltage(voltage);
       }).finallyDo(() -> {
          voltage = 0;
-         ArmMotor.setVoltage(0);
+         // pivotMotor.setVoltage(0);
       });
 
    }
 
+   // positive outtakes
    public Command outtake(double outtakeSpeed) {
-      return run(() -> {
-         intakeMotortop.set(outtakeSpeed);
-         intakeMotorbottom.set(-outtakeSpeed);
+      return startEnd(() -> {
+         intakeMotorTop.set(outtakeSpeed);
+         intakeMotorBottom.set(outtakeSpeed);
+      }, () -> {
+         intakeMotorTop.set(0);
+         intakeMotorBottom.set(0);
       });
+   }
+
+   public void periodic() {
+      color = colorSensor.readColors();
+      SmartDashboard.putNumber("red", color.getR());
+      SmartDashboard.putNumber("green", color.getG());
+      SmartDashboard.putNumber("blue", color.getB());
+      SmartDashboard.putNumber("sum", color.getR() + color.getB() + color.getG());
+
    }
 }
