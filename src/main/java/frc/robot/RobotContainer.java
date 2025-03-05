@@ -18,6 +18,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,6 +49,9 @@ public class RobotContainer {
   private final JoystickButton y = new JoystickButton(control,  XboxController.Button.kY.value);
   private final JoystickButton a = new JoystickButton(control,  XboxController.Button.kA.value);
   private final JoystickButton b = new JoystickButton(control,  XboxController.Button.kB.value);
+  
+  private final POVButton up = new POVButton(control, 0);
+  private final POVButton down = new POVButton(control, 180);
 
   private final SendableChooser<String> chooserJoystick;
 
@@ -116,10 +120,16 @@ public class RobotContainer {
     // controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
     // controller.cross().whileTrue(elevator.setSpeed(0.3));
     // controller.circle().whileTrue(elevator.setSpeed(-0.3));
-    x.whileTrue(elevator.setSpeed(1));
+    x.whileTrue(elevator.moveToHeight(100));
     y.whileTrue(elevator.setSpeed(-1));
-    a.whileTrue(arm.intake(0.5));
+    a.whileTrue(arm.intake(.5));
+    a.whileFalse(arm.outtake(0));
     b.whileTrue(arm.intake(-0.5));
+    b.whileFalse(arm.outtake(0));
+
+    up.onChange(new InstantCommand(() -> {elevator.changeSpeed(0.01);}));
+    down.onChange(new InstantCommand(() -> {elevator.changeSpeed(-0.01);}));
+
 //change code to use playstation and not command playstation. then make motor value variables for code
 //sorry this comment is so bad i had like 10 secs - mark twain
   }

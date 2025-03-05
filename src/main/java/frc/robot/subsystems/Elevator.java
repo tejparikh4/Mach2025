@@ -44,17 +44,17 @@ public class Elevator extends SubsystemBase{
     private SparkClosedLoopController rightController;
     private double voltage = 0;
     private static double kDt = 0.02;
-    private static double kMaxVelocity = 1.75;
-    private static double kMaxAcceleration = 0.75;
+    private static double kMaxVelocity = 5;
+    private static double kMaxAcceleration = 1;
 
     // kG + kS = 0.73
     // kG - kS = -0.64
     // kG = 0.045
     // kS = 0.685
 
-    private static double kG = 0.045;
-    private static double kS = 0.685;
-    private static double kV = 0.5;
+    private static double kG = 0.36;
+    private static double kS = 0.02;
+    private static double kV = 0.1;
     private static double kA = 0;
     // private static double kP = 1.3;
     // private static double kI = 0.0;
@@ -185,7 +185,6 @@ public class Elevator extends SubsystemBase{
     }
 
 
-
     public void changeSpeed(double delta) {
         setToVoltage += delta;
     }
@@ -197,6 +196,10 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("setpoint", setpoint.velocity);
         SmartDashboard.putNumber("ff voltage", voltage);
         SmartDashboard.putNumber("setToVoltage", setToVoltage);
+
+        if(leftMotor.getEncoder().getPosition() > 115) {
+            setSpeed(0);
+        }
     }
 
     
