@@ -65,9 +65,10 @@ public class RobotContainer {
      
     //neo seriall num 317B6CA
     // Configure the trigger bindings
-     configureBindings();
+    configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    
+    // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG())));
+    // arm.setDefaultCommand(arm.outtake(0));
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
@@ -100,9 +101,9 @@ public class RobotContainer {
     controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
     controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
 
-    controller.cross().whileTrue(elevator.setSpeed(4));
+    controller.cross().whileTrue(elevator.setSpeed(1));
     controller.circle().whileTrue(elevator.setSpeed(-0.5));
-    controller.square().whileTrue(elevator.setSpeed(0.15));
+    controller.square().whileTrue(elevator.setSpeed());
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
@@ -110,13 +111,14 @@ public class RobotContainer {
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
-    controller.triangle().whileTrue(arm.intake(0.5));
+    // controller.triangle().whileTrue(arm.intake(0.5));
+    controller.triangle().whileTrue(elevator.moveToHeight(60));
 
-    controller.pov(0).whileTrue(arm.outtake(0.5));
-    controller.pov(180).whileTrue(arm.outtake(-.5));
+    // controller.pov(0).whileTrue(arm.outtake(0.5));
+    // controller.pov(180).whileTrue(arm.outtake(-.5));
 
-    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
-    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
+    controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
+    controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
   }
 
