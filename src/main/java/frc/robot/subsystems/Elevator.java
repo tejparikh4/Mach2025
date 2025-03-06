@@ -40,25 +40,24 @@ public class Elevator extends SubsystemBase{
     private RelativeEncoder leftEncoder;
     private RelativeEncoder rightEncoder;
 
-    private double startPos;
-
     private SparkClosedLoopController leftController;
     private SparkClosedLoopController rightController;
     private double voltage = 0;
     private static double kDt = 0.02;
-    private static double kMaxVelocity = 1.75;
-    private static double kMaxAcceleration = 0.75;
+    private static double kMaxVelocity = 20;
+    private static double kMaxAcceleration = 10;
 
-    // kG + kS = 0.73
-    // kG - kS = -0.64
-    // kG = 0.045
-    // kS = 0.685
+    // kG + kS = 0.4
+    // kG - kS = 0.14
+    // kG = 0.27
+    // kS = 0.13
 
-    private static double kG = 0.045;
-    private static double kS = 0.685;
-    private static double kV = 0.5;
-    private static double kA = 0;
-    // private static double kP = 1.3;
+    private static double kG = 0.4;
+    private static double kS = 0.14;
+    private static double kV = 0.112;
+    private static double kA = 0.011;
+
+    private static double kP = 0;
     // private static double kI = 0.0;
     // private static double kD = 0.7;
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
@@ -70,6 +69,7 @@ public class Elevator extends SubsystemBase{
     private final TrapezoidProfile.State L2 = new TrapezoidProfile.State(20, 0);
 
     private double startTime = 0;
+    private double startPos = 0;
 
     private double setToVoltage = 0;
 
@@ -90,7 +90,7 @@ public class Elevator extends SubsystemBase{
     public Elevator() {
         leftMotor = new SparkMax(Constants.elevatorLeftId, MotorType.kBrushless);
         rightMotor = new SparkMax(Constants.elevatorRightId, MotorType.kBrushless);
-
+        
         leftEncoder = leftMotor.getEncoder();
         rightEncoder = rightMotor.getEncoder();
 
@@ -132,46 +132,60 @@ public class Elevator extends SubsystemBase{
 
     public Command moveToHeight(double height){
         // controller.setGoal(height);
-        
         return startRun(() -> {
             startTime = Timer.getFPGATimestamp();
-            startPos = getAverageEncoder();
+            startPos = getAverageEncoderPosition();
             // leftMotor.setVoltage(voltage);
             // rightMotor.setVoltage(-voltage);
         },()->{
             lastSetpoint = setpoint;
 
-            // setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height,0));
-            setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(0, 0), new TrapezoidProfile.State(height,0));
+            // trapezoidal motion profile
+            setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height, 0));
 
-            // voltage = feedForward.calculate(velocity);
+            // feedforward
             System.out.println("MOVING TO HEIGHT");
+            SmartDashboard.putNumber("targetVel", setpoint.velocity);
+            SmartDashboard.putNumber("measuredLeftVelRPS", leftEncoder.getVelocity() / 60);
             voltage = feedForward.calculateWithVelocities(lastSetpoint.velocity, setpoint.velocity);
+            
+            // pid
+            double error = setpoint.position - getAverageEncoderPosition();
+            SmartDashboard.putNumber("elevator error", error);
 
-            leftMotor.setVoltage(voltage);
-            rightMotor.setVoltage(-voltage);
+            double output = kP * error;
+            SmartDashboard.putNumber("elevator pid output", output);
+
+            voltage += output;
+
+            //position limiter
+            if(leftMotor.getEncoder().getPosition() > 70) {
+                voltage = 0;
+            }
+
+            runMotors(voltage);
+
+            return;
+
         }).finallyDo(() -> {
             voltage = 0;
-            leftMotor.setVoltage(0);
-            rightMotor.setVoltage(0);
+            runMotors(0);
         });
     }
 
-
-    public double getAverageEncoder() {
-        return (leftEncoder.getPosition() - rightEncoder.getPosition()) / 2;
-    }
-
+    // public void changekV(double amount) {
+    //     kV += amount;
+    //     feedForward.set
+    // }
 
     // positive is raise
     public Command setSpeed() {
         return startEnd(() ->
             {
-                leftMotor.setVoltage(setToVoltage);
-                rightMotor.setVoltage(-setToVoltage);
+                runMotors(setToVoltage);
+                
             }, () -> {
-                leftMotor.setVoltage(0);
-                rightMotor.setVoltage(0);
+                runMotors(0);
             }
         );
     }
@@ -179,11 +193,9 @@ public class Elevator extends SubsystemBase{
     public Command setSpeed(double speed) {
         return startEnd(() ->
             {
-                leftMotor.setVoltage(speed);
-                rightMotor.setVoltage(-speed);
+                runMotors(speed);
             }, () -> {
-                leftMotor.setVoltage(0);
-                rightMotor.setVoltage(0);
+                runMotors(0);
             }
         );
     }
@@ -194,20 +206,34 @@ public class Elevator extends SubsystemBase{
     }
 
 
-
     public void changeSpeed(double delta) {
         setToVoltage += delta;
+    }
+
+    public double getAverageEncoderPosition() {
+        return (leftEncoder.getPosition() - rightEncoder.getPosition()) / 2;
+    }
+
+    public double getAverageEncoderVelocity() {
+        return (leftEncoder.getVelocity() - rightEncoder.getVelocity()) / 2 / 60;
+    }
+
+    public double getkG() {
+        return kG;
     }
 
     @Override
     public void periodic(){
         SmartDashboard.putNumber("leftEncoderPos", leftEncoder.getPosition());
         SmartDashboard.putNumber("rightEncoderPos", rightEncoder.getPosition());
-        SmartDashboard.putNumber("leftMeasuredVel", leftEncoder.getVelocity());
-        SmartDashboard.putNumber("rightMeasuredVel", rightEncoder.getVelocity());
-        SmartDashboard.putNumber("setpoint velocity", setpoint.velocity);
+        SmartDashboard.putNumber("averageElevatorEncoderPos", getAverageEncoderPosition());
+        SmartDashboard.putNumber("averageElevatorEncoderVel", getAverageEncoderVelocity());
+        SmartDashboard.putNumber("setpoint", setpoint.velocity);
         SmartDashboard.putNumber("ff voltage", voltage);
         SmartDashboard.putNumber("setToVoltage", setToVoltage);
+        SmartDashboard.putNumber("setpoint position", setpoint.position);
+        
+        
     }
 
     
