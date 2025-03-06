@@ -57,7 +57,7 @@ public class Elevator extends SubsystemBase{
     private static double kV = 0.112;
     private static double kA = 0.011;
 
-    private static double kP = 0;
+    private static double kP = 1;
     // private static double kI = 0.0;
     // private static double kD = 0.7;
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);

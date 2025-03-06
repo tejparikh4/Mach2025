@@ -67,7 +67,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
+    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()-0.085), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
   }
   
@@ -101,8 +101,8 @@ public class RobotContainer {
     controller.L1().whileTrue(arm.rotate(0.5));
     controller.R1().whileTrue(arm.rotate(-0.5));
 
-    controller.cross().whileTrue(elevator.setSpeed(1));
-    controller.circle().whileTrue(elevator.setSpeed(-0.5));
+    controller.cross().whileTrue(elevator.setSpeed(-1));
+    controller.circle().whileTrue(arm.outtake(-0.5));
     controller.square().whileTrue(arm.intake(0.5));
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
@@ -112,8 +112,9 @@ public class RobotContainer {
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
     // controller.triangle().whileTrue(arm.intake(0.5));
-    controller.triangle().whileTrue(elevator.moveToHeight(50));
+    controller.triangle().whileTrue(elevator.moveToHeight(114));
 
+    //
     // controller.pov(0).whileTrue(arm.outtake(0.5));
     // controller.pov(180).whileTrue(arm.outtake(-.5));
 

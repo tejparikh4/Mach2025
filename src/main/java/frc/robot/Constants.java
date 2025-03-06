@@ -21,7 +21,7 @@ public final class Constants {
   public static final int elevatorRightId = 14;
   public static final double kElevatorGearRatio = 20;
   public static final double kElevatorGearDiameter = 1.757; // inches
-  // targetheight / (kElevatorGearDiameter * Math.PI) * kElevatorGearRatio
+  public static double elevatorConstant = 1 / (kElevatorGearDiameter * Math.PI) * kElevatorGearRatio;
   
 
   public static final int kDriverControllerPort = 0;
