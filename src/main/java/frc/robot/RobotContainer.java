@@ -98,12 +98,12 @@ public class RobotContainer {
   
 
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    controller.L2().onTrue(arm.rotate(() -> controller.getL2Axis()));
-    controller.R2().onTrue(arm.rotate(() -> -controller.getR2Axis()));
+    controller.L1().whileTrue(arm.rotate(0.5));
+    controller.R1().whileTrue(arm.rotate(-0.5));
 
     controller.cross().whileTrue(elevator.setSpeed(1));
     controller.circle().whileTrue(elevator.setSpeed(-0.5));
-    controller.square().whileTrue(elevator.setSpeed());
+    controller.square().whileTrue(arm.intake(0.5));
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
@@ -112,7 +112,7 @@ public class RobotContainer {
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
     // controller.triangle().whileTrue(arm.intake(0.5));
-    controller.triangle().whileTrue(elevator.moveToHeight(60));
+    controller.triangle().whileTrue(elevator.moveToHeight(50));
 
     // controller.pov(0).whileTrue(arm.outtake(0.5));
     // controller.pov(180).whileTrue(arm.outtake(-.5));

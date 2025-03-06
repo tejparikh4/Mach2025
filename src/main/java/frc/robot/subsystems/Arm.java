@@ -43,7 +43,7 @@ public class Arm extends SubsystemBase {
    private TrapezoidProfile.State lastSetpoint = new TrapezoidProfile.State();
 
    public Arm() {
-      // pivotMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
+      pivotMotor = new SparkMax(Constants.armId, MotorType.kBrushless);
       intakeMotorTop = new SparkMax(Constants.intakeMotorTopId, MotorType.kBrushless);
       intakeMotorBottom = new SparkMax(Constants.intakeMotorBottomId, MotorType.kBrushless);
       colorSensor = new TCS34725ColorSensor();
@@ -53,10 +53,12 @@ public class Arm extends SubsystemBase {
 
    private final ArmFeedforward feedForward = new ArmFeedforward(kS, kG, kV);
 
-   public Command rotate(DoubleSupplier speedDoubleSupplier) {
+   public Command rotate(Double speed) {
    
-      return run(() -> {
-         pivotMotor.set(speedDoubleSupplier.getAsDouble());
+      return startEnd(() -> {
+         pivotMotor.set(speed);
+      }, () -> {
+         pivotMotor.set(0);
       });
    }
 
@@ -84,6 +86,9 @@ public class Arm extends SubsystemBase {
             intakeMotorTop.set(speed);
             intakeMotorBottom.set(speed);
          }
+      }).finallyDo(() -> {
+         intakeMotorTop.set(0);
+         intakeMotorBottom.set(0);
       });
       
 
