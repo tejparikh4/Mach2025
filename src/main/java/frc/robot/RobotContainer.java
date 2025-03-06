@@ -114,6 +114,7 @@ public class RobotContainer {
     // controller.triangle().whileTrue(arm.intake(0.5));
     controller.triangle().whileTrue(elevator.moveToHeight(114));
 
+    controller.share().onTrue(new InstantCommand(() -> elevator.zeroEncoders()));
     //
     // controller.pov(0).whileTrue(arm.outtake(0.5));
     // controller.pov(180).whileTrue(arm.outtake(-.5));

@@ -94,8 +94,7 @@ public class Elevator extends SubsystemBase{
         leftEncoder = leftMotor.getEncoder();
         rightEncoder = rightMotor.getEncoder();
 
-        leftEncoder.setPosition(0);
-        rightEncoder.setPosition(0);
+        zeroEncoders();
         // leftController = leftMotor.getClosedLoopController();
         // rightController = rightMotor.getClosedLoopController();
 
@@ -216,6 +215,11 @@ public class Elevator extends SubsystemBase{
 
     public double getAverageEncoderVelocity() {
         return (leftEncoder.getVelocity() - rightEncoder.getVelocity()) / 2 / 60;
+    }
+
+    public void zeroEncoders() {
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
     }
 
     public double getkG() {
