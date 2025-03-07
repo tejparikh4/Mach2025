@@ -67,7 +67,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()-0.085), elevator));
+    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
   }
   
@@ -100,7 +100,7 @@ public class RobotContainer {
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     controller.L1().whileTrue(arm.rotate(0.5));
     controller.R1().whileTrue(arm.rotate(-0.5));
-
+    controller.pov(0).whileTrue(elevator.setSpeed(1));
     controller.cross().whileTrue(elevator.setSpeed(-1));
     controller.circle().whileTrue(arm.outtake(-0.5));
     controller.square().whileTrue(arm.intake(0.5));

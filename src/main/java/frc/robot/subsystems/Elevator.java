@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import java.util.function.BooleanSupplier;;
 //max height-116 rot
 public class Elevator extends SubsystemBase{
     private SparkMax leftMotor;
@@ -129,6 +130,9 @@ public class Elevator extends SubsystemBase{
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysId.dynamic(direction);
     }
+public BooleanSupplier areDoublesEqual(double double1, double double2) {
+    return () -> {return (double1 == double2);};
+}
 
     public Command moveToHeight(double height){
         // controller.setGoal(height);
@@ -170,7 +174,8 @@ public class Elevator extends SubsystemBase{
         }).finallyDo(() -> {
             voltage = 0;
             runMotors(0);
-        });
+        }).until(areDoublesEqual(height, setpoint.position));
+            
     }
 
     // public void changekV(double amount) {
