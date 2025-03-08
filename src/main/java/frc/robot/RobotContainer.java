@@ -45,6 +45,12 @@ public class RobotContainer {
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
+  private final JoystickButton aButton = new JoystickButton(control, XboxController.Button.kA.value);
+  private final JoystickButton bButton = new JoystickButton(control, XboxController.Button.kB.value);
+  private final JoystickButton xButton = new JoystickButton(control, XboxController.Button.kX.value);
+  private final JoystickButton yButton = new JoystickButton(control, XboxController.Button.kY.value);
+
+
 
 
   /* Subsystems */
@@ -72,7 +78,7 @@ public class RobotContainer {
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                              () -> -controller.getRawAxis(translationAxis),
+                                                              () -> -control.getRawAxis(translationAxis),
                                                               () -> -controller.getRawAxis(strafeAxis))
                                                               .withControllerRotationAxis(() -> -controller.getRightX())
                                                               .deadband(0.1)
@@ -101,26 +107,32 @@ public class RobotContainer {
     controller.L1().whileTrue(arm.rotate(0.5));
     controller.R1().whileTrue(arm.rotate(-0.5));
 
-    controller.cross().whileTrue(elevator.setSpeed(-1));
-    controller.circle().whileTrue(arm.outtake(-0.5));
-    controller.square().whileTrue(arm.intake(0.5));
+
+    // controller.cross().whileTrue(elevator.setSpeed(-1));
+    // controller.circle().whileTrue(arm.outtake(-0.5));
+    // controller.square().whileTrue(arm.intake(0.5));
+
+    yButton.whileTrue(elevator.setSpeed(1));
+    aButton.whileTrue(elevator.setSpeed(-1));
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
+
+    bButton.whileTrue(elevator.moveToHeight(110));
 
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
     // controller.triangle().whileTrue(arm.intake(0.5));
-    controller.triangle().whileTrue(elevator.moveToHeight(114));
+    // controller.triangle().whileTrue(elevator.moveToHeight(114));
 
-    controller.share().onTrue(new InstantCommand(() -> elevator.zeroEncoders()));
-    //
-    // controller.pov(0).whileTrue(arm.outtake(0.5));
-    // controller.pov(180).whileTrue(arm.outtake(-.5));
+    // controller.share().onTrue(new InstantCommand(() -> elevator.zeroEncoders()));
+    // //
+    // // controller.pov(0).whileTrue(arm.outtake(0.5));
+    // // controller.pov(180).whileTrue(arm.outtake(-.5));
 
-    controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
-    controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
+    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
+    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
   }
 
