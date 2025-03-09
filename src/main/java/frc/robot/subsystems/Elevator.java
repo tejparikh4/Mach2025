@@ -72,7 +72,6 @@ public class Elevator extends SubsystemBase{
     private final TrapezoidProfile.State ground = new TrapezoidProfile.State(0, 0);
     private final TrapezoidProfile.State L1 = new TrapezoidProfile.State(10, 0);
     private final TrapezoidProfile.State L2 = new TrapezoidProfile.State(20, 0);
-
     private double startTime = 0;
     private double startPos = 0;
 

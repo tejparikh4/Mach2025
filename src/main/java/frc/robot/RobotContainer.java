@@ -4,32 +4,20 @@
 
 package frc.robot;
 
-import frc.robot.Constants;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
-import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.RobotController;
-
-import java.io.File;
-import java.util.Dictionary;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Axis;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.SwerveSubsystem;
+import swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -112,7 +100,8 @@ private final POVButton dpadDown = new POVButton(control, 180);
 
     startButton.onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     backButton.onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
-    controller.L1().whileTrue(arm.moveToPosition(0.97));
+    controller.L1().whileTrue(arm.rotate(0.5));
+    //controller.L2().whileTrue(arm.moveToPosition(0.28));
     controller.R1().whileTrue(arm.rotate(-0.5));
 
 
@@ -124,7 +113,7 @@ private final POVButton dpadDown = new POVButton(control, 180);
     aButton.whileTrue(elevator.setSpeed(-1));
     xButton.whileTrue(arm.intake(0.5));
     dpadUp.whileTrue(elevator.moveToHeight(114));
-    dpadLeft.whileTrue(elevator.moveToHeight(22.7));
+    dpadLeft.whileTrue(arm.moveToPosition(0.35).andThen(elevator.moveToHeight(22.7)));
     dpadRight.whileTrue(elevator.moveToHeight(57.5));
     dpadDown.whileTrue(elevator.moveToHeight(0));
     //Pov Down, L1 
@@ -134,7 +123,7 @@ private final POVButton dpadDown = new POVButton(control, 180);
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
 
-    bButton.whileTrue(elevator.moveToHeight(23.9));
+    bButton.whileTrue(arm.moveToPosition(0.28));
 
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
