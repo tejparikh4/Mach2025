@@ -69,9 +69,9 @@ public class SwerveSubsystem extends SubsystemBase {
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve_kraken");
     private final SwerveDrive swerveDrive;
 
-    SlewRateLimiter xLimiter = new SlewRateLimiter(0.01);
-    SlewRateLimiter yLimiter = new SlewRateLimiter(0.01);
-    SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.01);
+    SlewRateLimiter xLimiter = new SlewRateLimiter(0.001);
+    SlewRateLimiter yLimiter = new SlewRateLimiter(0.001);
+    SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.001);
 
     // PigeonIMU gyro;
     private PigeonIMU gyro = new PigeonIMU(35); /* example Pigeon with device ID 0 */
@@ -83,6 +83,11 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                   new Pose2d(new Translation2d(Meter.of(1), // WHY?????
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
+      if (DriverStation.isTeleop()) {
+        swerveDrive.getSwerveController().addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
+      } else {
+        swerveDrive.getSwerveController().addSlewRateLimiters(null, null, null);
+      }
       // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
       // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
 
@@ -147,30 +152,6 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
 
-  /**
-   * Command to drive the robot using translative values and heading as a setpoint.
-   *
-   * @param translationX Translation in the X direction.
-   * @param translationY Translation in the Y direction.
-   * @param headingX     Heading X to calculate angle of the joystick.
-   * @param headingY     Heading Y to calculate angle of the joystick.
-   * @return Drive command.
-   */
-  // public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-  //                             DoubleSupplier headingY)
-  // {
-  //   return run(() -> {
-  //     double xInput = Math.pow(translationX.getAsDouble(), 1); // Smooth controll out
-  //     double yInput = Math.pow(translationY.getAsDouble(), 1); // Smooth controll out
-  // // Make the robot move
-  //     swerveDrive.driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
-  //                                                                     headingX.getAsDouble(),
-  //                                                                     headingY.getAsDouble(),
-  //                                                                     swerveDrive.getYaw().getRadians(),
-  //                                                                     swerveDrive.getMaximumChassisVelocity()));
-  //     swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
-  //   });
-  // }
 
 
   @Override

@@ -68,7 +68,7 @@ private final POVButton dpadDown = new POVButton(control, 180);
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()-0.085), elevator));
+   // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
   }
   
@@ -153,7 +153,7 @@ private final POVButton dpadDown = new POVButton(control, 180);
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-  return drivebase.getAutonomousCommand("fuck");
+  return drivebase.getAutonomousCommand("maaan fuck this");
   }
 
   public DoubleSupplier getRightX() {
