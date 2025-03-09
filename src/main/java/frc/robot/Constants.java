@@ -25,6 +25,7 @@ public final class Constants {
   
 
   public static final int kDriverControllerPort = 0;
+  public static final int kSecondaryControllerPort = 1;
   public static int intakeMotorTopId=15;
   public static int intakeMotorBottomId=16;
 

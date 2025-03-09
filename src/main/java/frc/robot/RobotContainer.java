@@ -40,7 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class RobotContainer {
 
   private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
-  private final Joystick control = new Joystick(Constants.kDriverControllerPort);
+  private final Joystick control = new Joystick(Constants.kSecondaryControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -85,9 +85,9 @@ private final POVButton dpadDown = new POVButton(control, 180);
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                              () -> -control.getRawAxis(translationAxis),
-                                                              () -> -control.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(() -> -control.getRawAxis(rotationAxis))
+                                                              () -> -controller.getRawAxis(translationAxis),
+                                                              () -> -controller.getRawAxis(strafeAxis))
+                                                              .withControllerRotationAxis(() -> -controller.getRightX())
                                                               .deadband(0.1)
                                                               .scaleTranslation(1.2)
                                                               .allianceRelativeControl(true);
@@ -110,7 +110,7 @@ private final POVButton dpadDown = new POVButton(control, 180);
   private void configureBindings() {
   
 
-    startButton.onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     backButton.onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller.L1().whileTrue(arm.moveToPosition(0.97));
     controller.R1().whileTrue(arm.rotate(-0.5));
