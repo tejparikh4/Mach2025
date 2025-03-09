@@ -13,6 +13,10 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.BooleanSupplier;
+
+import javax.crypto.KeyGenerator;
+
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
@@ -52,7 +56,7 @@ public class Elevator extends SubsystemBase{
     // kG = 0.27
     // kS = 0.13
 
-    private static double kG = 0.4;
+    private static double kG = 0.41;
     private static double kS = 0.14;
     private static double kV = 0.112;
     private static double kA = 0.011;
@@ -128,16 +132,17 @@ public class Elevator extends SubsystemBase{
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysId.dynamic(direction);
     }
-
+    public BooleanSupplier areBooleansEqual(Boolean double1, Boolean double2){
+        return () -> (double1 == double2);
+    }
     public Command moveToHeight(double height){
         // controller.setGoal(height);
         return startRun(() -> {
             startTime = Timer.getFPGATimestamp();
             startPos = getAverageEncoderPosition();
-            // leftMotor.setVoltage(voltage);
-            // rightMotor.setVoltage(-voltage);
+            leftMotor.setVoltage(voltage);
+            rightMotor.setVoltage(-voltage);
         },()->{
-            lastSetpoint = setpoint;
 
             // trapezoidal motion profile
             setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height, 0));
@@ -158,19 +163,18 @@ public class Elevator extends SubsystemBase{
             voltage += output;
 
             //position limiter
-            if(leftMotor.getEncoder().getPosition() > 70) {
+            if(leftMotor.getEncoder().getPosition() > 115) {
                 voltage = 0;
             }
 
             runMotors(voltage);
-
+            lastSetpoint = setpoint;
+            setpoint.velocity = 0;
             return;
 
         }).finallyDo(() -> {
-            voltage = 0;
-            runMotors(0);
-        });
-    }
+            runMotors(kG);
+        });};
 
     // public void changekV(double amount) {
     //     kV += amount;

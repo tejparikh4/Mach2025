@@ -11,6 +11,7 @@ import frc.robot.TCS34725ColorSensor.TCSColor;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
    private SparkMax pivotMotor;
-   private RelativeEncoder ArmEncoder;
+   private DutyCycleEncoder pivotEncoder;
    private double voltage = 0;
    private SparkMax intakeMotorTop;
    private SparkMax intakeMotorBottom;
@@ -48,7 +49,7 @@ public class Arm extends SubsystemBase {
       intakeMotorBottom = new SparkMax(Constants.intakeMotorBottomId, MotorType.kBrushless);
       colorSensor = new TCS34725ColorSensor();
       colorSensor.init();
-      // pivotEncoder = pivotMotor.getEncoder();
+      pivotEncoder = new DutyCycleEncoder(0);
    }
 
    private final ArmFeedforward feedForward = new ArmFeedforward(kS, kG, kV);
@@ -100,21 +101,34 @@ public class Arm extends SubsystemBase {
 
    public Command moveToPosition(double height) {
       // controller.setGoal(height);
+      //intake-0.88
+      //outtake.97
+      //L4 .9
       return startRun(() -> {
          startTime = Timer.getFPGATimestamp();
          // leftMotor.setVoltage(voltage);
          // rightMotor.setVoltage(-voltage);
       }, () -> {
-         lastSetpoint = setpoint;
-         setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(0, 0),
-               new TrapezoidProfile.State(height, 0));
+         // lastSetpoint = setpoint;
+         // setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(0, 0),
+         //       new TrapezoidProfile.State(height, 0));
 
-         // voltage = feedForward.calculate(velocity);
-         System.out.println("moving to outaking");
-         SmartDashboard.putNumber("target Velocity", setpoint.velocity);
-         // SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
-         voltage = feedForward.calculateWithVelocities(lastSetpoint.position, lastSetpoint.velocity, setpoint.velocity);
+         // // voltage = feedForward.calculate(velocity);
+         // System.out.println("moving to outaking");
+         // SmartDashboard.putNumber("target Velocity", setpoint.velocity);
+         // // SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
+         // voltage = feedForward.calculateWithVelocities(setpoint.position, lastSetpoint.velocity, setpoint.velocity);
          // pivotMotor.setVoltage(voltage);
+         double error = pivotEncoder.get() - height;
+         if(Math.abs(error) > 0.01){
+            if(error < 0) {
+               pivotMotor.set(0.3);
+            } else {
+               pivotMotor.set(-0.3);
+            }
+         } else {
+            pivotMotor.set(0);
+         }
       }).finallyDo(() -> {
          voltage = 0;
          // pivotMotor.setVoltage(0);
@@ -133,12 +147,16 @@ public class Arm extends SubsystemBase {
       });
    }
 
+   public double getPosition() {
+      return pivotEncoder.get();
+   }
+
    public void periodic() {
       color = colorSensor.readColors();
       SmartDashboard.putNumber("red", color.getR());
       SmartDashboard.putNumber("green", color.getG());
       SmartDashboard.putNumber("blue", color.getB());
       SmartDashboard.putNumber("sum", color.getR() + color.getB() + color.getG());
-
+      SmartDashboard.putNumber("pivot pos", pivotEncoder.get());
    }
 }
