@@ -99,11 +99,11 @@ public class Arm extends SubsystemBase {
       return endIntake;
    }
 
-   public Command moveToPosition(double height) {
+   public Command moveToPosition(double angle) {
       // controller.setGoal(height);
       //intake-0.88
       //outtake.97
-      //L4 .9
+      //L4 .99-> 0.98
       return startRun(() -> {
          startTime = Timer.getFPGATimestamp();
          // leftMotor.setVoltage(voltage);
@@ -119,7 +119,8 @@ public class Arm extends SubsystemBase {
          // // SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
          // voltage = feedForward.calculateWithVelocities(setpoint.position, lastSetpoint.velocity, setpoint.velocity);
          // pivotMotor.setVoltage(voltage);
-         double error = pivotEncoder.get() - height;
+         double error = pivotEncoder.get() - angle;
+         SmartDashboard.putNumber("arm error", error);
          if(Math.abs(error) > 0.01){
             if(error < 0) {
                pivotMotor.set(0.3);
