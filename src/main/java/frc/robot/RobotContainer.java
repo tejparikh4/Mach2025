@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
 import java.util.Dictionary;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,6 +46,18 @@ public class RobotContainer {
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
+  private final JoystickButton aButton = new JoystickButton(control, XboxController.Button.kA.value);
+  private final JoystickButton bButton = new JoystickButton(control, XboxController.Button.kB.value);
+  private final JoystickButton xButton = new JoystickButton(control, XboxController.Button.kX.value);
+  private final JoystickButton yButton = new JoystickButton(control, XboxController.Button.kY.value);
+private final POVButton dpadUp = new POVButton(control, 0);
+private final POVButton dpadLeft = new POVButton(control, 270);
+private final POVButton dpadRight = new POVButton(control, 90);
+private final POVButton dpadDown = new POVButton(control, 180);
+
+  private final JoystickButton startButton = new JoystickButton(control, XboxController.Button.kStart.value);
+  private final JoystickButton backButton = new JoystickButton(control, XboxController.Button.kBack.value);
+
 
 
   /* Subsystems */
@@ -72,9 +85,9 @@ public class RobotContainer {
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                              () -> -controller.getRawAxis(translationAxis),
-                                                              () -> -controller.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(() -> -controller.getRightX())
+                                                              () -> -control.getRawAxis(translationAxis),
+                                                              () -> -control.getRawAxis(strafeAxis))
+                                                              .withControllerRotationAxis(() -> -control.getRawAxis(rotationAxis))
                                                               .deadband(0.1)
                                                               .scaleTranslation(1.2)
                                                               .allianceRelativeControl(true);
@@ -82,7 +95,7 @@ public class RobotContainer {
 
 
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().
-                                        withControllerHeadingAxis(controller::getRightX, controller::getRightY).
+                                        withControllerHeadingAxis(getRightX(), getRightY()).
                                         headingWhile(true);
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
   /*
@@ -97,30 +110,45 @@ public class RobotContainer {
   private void configureBindings() {
   
 
-    controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    controller.L1().whileTrue(arm.rotate(0.5));
+    startButton.onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    backButton.onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
+    controller.L1().whileTrue(arm.moveToPosition(0.97));
     controller.R1().whileTrue(arm.rotate(-0.5));
-    controller.pov(0).whileTrue(elevator.setSpeed(1));
-    controller.cross().whileTrue(elevator.setSpeed(-1));
-    controller.circle().whileTrue(arm.outtake(-0.5));
-    controller.square().whileTrue(arm.intake(0.5));
+
+
+    // controller.cross().whileTrue(elevator.setSpeed(-1));
+    // controller.circle().whileTrue(arm.outtake(-0.5));
+    // controller.square().whileTrue(arm.intake(0.5));
+
+    yButton.whileTrue(elevator.setSpeed(1));
+    aButton.whileTrue(elevator.setSpeed(-1));
+    xButton.whileTrue(arm.intake(0.5));
+    dpadUp.whileTrue(elevator.moveToHeight(114));
+    dpadLeft.whileTrue(elevator.moveToHeight(22.7));
+    dpadRight.whileTrue(elevator.moveToHeight(57.5));
+    dpadDown.whileTrue(elevator.moveToHeight(0));
+    //Pov Down, L1 
+    //57.5
+    
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
+
+    bButton.whileTrue(elevator.moveToHeight(23.9));
 
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
     // controller.triangle().whileTrue(arm.intake(0.5));
-    controller.triangle().whileTrue(elevator.moveToHeight(114));
+    // controller.triangle().whileTrue(elevator.moveToHeight(114));
 
-    controller.share().onTrue(new InstantCommand(() -> elevator.zeroEncoders()));
-    //
-    // controller.pov(0).whileTrue(arm.outtake(0.5));
-    // controller.pov(180).whileTrue(arm.outtake(-.5));
+    // controller.share().onTrue(new InstantCommand(() -> elevator.zeroEncoders()));
+    // //
+    // // controller.pov(0).whileTrue(arm.outtake(0.5));
+    // // controller.pov(180).whileTrue(arm.outtake(-.5));
 
-    controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
-    controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
+    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
+    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
   }
 
@@ -137,5 +165,13 @@ public class RobotContainer {
   {
     // An example command will be run in autonomous
   return drivebase.getAutonomousCommand("maaan fuck this");
+  }
+
+  public DoubleSupplier getRightX() {
+    return () -> {return control.getRawAxis(rotationAxis);};
+  }
+
+  public DoubleSupplier getRightY() {
+    return () -> {return control.getRawAxis(XboxController.Axis.kRightY.value);};
   }
 }
