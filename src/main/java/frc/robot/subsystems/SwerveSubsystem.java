@@ -74,22 +74,20 @@ public class SwerveSubsystem extends SubsystemBase {
     SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.001);
 
     // PigeonIMU gyro;
-    private PigeonIMU gyro = new PigeonIMU(35); /* example Pigeon with device ID 0 */
+    private PigeonIMU gyro = new PigeonIMU(35);
 
 
     public SwerveSubsystem(){try
     {
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
-                                                                  new Pose2d(new Translation2d(Meter.of(1), // WHY?????
+                                                                  new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
-      if (DriverStation.isTeleop()) {
+      // if (DriverStation.isTeleop()) {
         swerveDrive.getSwerveController().addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
-      } else {
-        swerveDrive.getSwerveController().addSlewRateLimiters(null, null, null);
-      }
-      // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
-      // swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
+      // } else {
+      //   swerveDrive.getSwerveController().addSlewRateLimiters(null, null, null);
+      // }
 
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
@@ -117,15 +115,14 @@ public class SwerveSubsystem extends SubsystemBase {
                               DoubleSupplier headingY)
   {
     return run(() -> {
-      double xInput = Math.pow(translationX.getAsDouble(), 1); // Smooth controll out
-      double yInput = Math.pow(translationY.getAsDouble(), 1); // Smooth controll out
+      double xInput = Math.pow(translationX.getAsDouble(), 1); // Smooth control out
+      double yInput = Math.pow(translationY.getAsDouble(), 1); // Smooth control out
   // Make the robot move
       swerveDrive.driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
                                                                       swerveDrive.getYaw().getRadians(),
                                                                       swerveDrive.getMaximumChassisVelocity()));
-      swerveDrive.swerveController.addSlewRateLimiters(xLimiter, yLimiter, thetaLimiter);
     });
   }
 

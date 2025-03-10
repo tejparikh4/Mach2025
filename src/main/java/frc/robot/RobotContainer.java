@@ -69,7 +69,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-   // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
+    // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
   }
   
@@ -87,6 +87,20 @@ public class RobotContainer {
                                         withControllerHeadingAxis(getRightX(), getRightY()).
                                         headingWhile(true);
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+
+
+  SwerveInputStream driveIntakeRight = driveAngularVelocity.copy()
+                                        .withControllerHeadingAxis(() -> -0.47381472041, () -> -1.0)
+                                        .headingWhile(true);
+
+  Command driveFieldOrientedFacingIntakeRight = drivebase.driveFieldOriented(driveIntakeRight);
+
+  SwerveInputStream driveIntakeLeft = driveAngularVelocity.copy()
+                                        .withControllerHeadingAxis(() -> 0.47381472041, () -> -1.0)
+                                        .headingWhile(true);
+
+  Command driveFieldOrientedFacingIntakeLeft = drivebase.driveFieldOriented(driveIntakeLeft);
+  
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary]
@@ -98,8 +112,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
   
-
+    controller.circle().whileTrue(driveFieldOrientedFacingIntakeRight);
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.5));
     //controller.L2().whileTrue(arm.moveToPosition(0.28));
@@ -126,12 +141,12 @@ public class RobotContainer {
     controller2.pov(90).whileTrue(elevator.moveToHeight(114));
     controller2.pov(180).whileTrue(elevator.moveToHeight(0));
     
-    
+    controller2.b().whileTrue(arm.moveToPosition(0.28));
+
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
 
-    controller2.b().whileTrue(arm.moveToPosition(0.28));
 
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
