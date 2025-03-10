@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Arm;
@@ -28,23 +29,23 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
 
   private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
-  private final Joystick control = new Joystick(Constants.kSecondaryControllerPort);
+  private final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-  private final JoystickButton aButton = new JoystickButton(control, XboxController.Button.kA.value);
-  private final JoystickButton bButton = new JoystickButton(control, XboxController.Button.kB.value);
-  private final JoystickButton xButton = new JoystickButton(control, XboxController.Button.kX.value);
-  private final JoystickButton yButton = new JoystickButton(control, XboxController.Button.kY.value);
-private final POVButton dpadUp = new POVButton(control, 0);
-private final POVButton dpadLeft = new POVButton(control, 270);
-private final POVButton dpadRight = new POVButton(control, 90);
-private final POVButton dpadDown = new POVButton(control, 180);
+  // private final JoystickButton aButton = new JoystickButton(control, XboxController.Button.kA.value);
+  // private final JoystickButton bButton = new JoystickButton(control, XboxController.Button.kB.value);
+  // private final JoystickButton xButton = new JoystickButton(control, XboxController.Button.kX.value);
+  // private final JoystickButton yButton = new JoystickButton(control, XboxController.Button.kY.value);
+  // private final POVButton dpadUp = new POVButton(control, 0);
+  // private final POVButton dpadLeft = new POVButton(control, 270);
+  // private final POVButton dpadRight = new POVButton(control, 90);
+  // private final POVButton dpadDown = new POVButton(control, 180);
 
-  private final JoystickButton startButton = new JoystickButton(control, XboxController.Button.kStart.value);
-  private final JoystickButton backButton = new JoystickButton(control, XboxController.Button.kBack.value);
+  // private final JoystickButton startButton = new JoystickButton(control, XboxController.Button.kStart.value);
+  // private final JoystickButton backButton = new JoystickButton(control, XboxController.Button.kBack.value);
 
 
 
@@ -99,31 +100,38 @@ private final POVButton dpadDown = new POVButton(control, 180);
   
 
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    backButton.onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
-    controller.L1().whileTrue(arm.rotate(0.5));
+    controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
+    controller2.leftBumper().whileTrue(arm.rotate(0.5));
     //controller.L2().whileTrue(arm.moveToPosition(0.28));
-    controller.R1().whileTrue(arm.rotate(-0.5));
+    controller2.rightBumper().whileTrue(arm.moveToPosition(0.22));
 
 
     // controller.cross().whileTrue(elevator.setSpeed(-1));
     // controller.circle().whileTrue(arm.outtake(-0.5));
     // controller.square().whileTrue(arm.intake(0.5));
 
-    yButton.whileTrue(elevator.setSpeed(1));
-    aButton.whileTrue(elevator.setSpeed(-1));
-    xButton.whileTrue(arm.intake(0.5));
-    dpadUp.whileTrue(elevator.moveToHeight(114));
-    dpadLeft.whileTrue(arm.moveToPosition(0.35).andThen(elevator.moveToHeight(22.7)));
-    dpadRight.whileTrue(elevator.moveToHeight(57.5));
-    dpadDown.whileTrue(elevator.moveToHeight(0));
-    //Pov Down, L1 
-    //57.5
+    controller2.y().whileTrue(elevator.setSpeed(1));
+    controller2.a().whileTrue(elevator.setSpeed(-1));
+    controller2.x().whileTrue(arm.intake(0.5));
+    controller2.pov(0).whileTrue(
+      arm.moveToPosition(Constants.transitionRotation).andThen(
+      elevator.moveToHeight(Constants.L4Height)).andThen(
+      arm.moveToPosition(Constants.L4Rotation))
+    );
+    controller2.pov(270).whileTrue(
+      arm.moveToPosition(Constants.transitionRotation).andThen(
+      elevator.moveToHeight(Constants.L3Height)).andThen(
+      arm.moveToPosition(Constants.L3Rotation))
+    );
+    controller2.pov(90).whileTrue(elevator.moveToHeight(114));
+    controller2.pov(180).whileTrue(elevator.moveToHeight(0));
+    
     
 
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
 
-    bButton.whileTrue(arm.moveToPosition(0.28));
+    controller2.b().whileTrue(arm.moveToPosition(0.28));
 
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
@@ -157,10 +165,10 @@ private final POVButton dpadDown = new POVButton(control, 180);
   }
 
   public DoubleSupplier getRightX() {
-    return () -> {return control.getRawAxis(rotationAxis);};
+    return () -> {return controller2.getRawAxis(rotationAxis);};
   }
 
   public DoubleSupplier getRightY() {
-    return () -> {return control.getRawAxis(XboxController.Axis.kRightY.value);};
+    return () -> {return controller2.getRawAxis(XboxController.Axis.kRightY.value);};
   }
 }

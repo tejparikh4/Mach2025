@@ -36,6 +36,7 @@ public class Arm extends SubsystemBase {
    private double colorSum;
    private boolean isCoral = false;
    private boolean prevIsCoral = false;
+   private boolean isFinishedRotating = false;
 
    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity,
          kMaxAcceleration);
@@ -106,6 +107,7 @@ public class Arm extends SubsystemBase {
       //L4 .99-> 0.98
       return startRun(() -> {
          startTime = Timer.getFPGATimestamp();
+         isFinishedRotating = false;
          // leftMotor.setVoltage(voltage);
          // rightMotor.setVoltage(-voltage);
       }, () -> {
@@ -129,10 +131,13 @@ public class Arm extends SubsystemBase {
             }
          } else {
             pivotMotor.set(0);
+            isFinishedRotating = true;
          }
-      }).finallyDo(() -> {
+      })
+      .until(() -> isFinishedRotating)
+      .finallyDo(() -> {
          voltage = 0;
-         // pivotMotor.setVoltage(0);
+         pivotMotor.setVoltage(0);
       });
 
    }

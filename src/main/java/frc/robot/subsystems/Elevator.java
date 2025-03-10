@@ -57,7 +57,7 @@ public class Elevator extends SubsystemBase{
     // kG = 0.27
     // kS = 0.13
 
-    private static double kG = 0.41;
+    private static double kG = 0.3;
     private static double kS = 0.14;
     private static double kV = 0.112;
     private static double kA = 0.011;
@@ -132,8 +132,8 @@ public class Elevator extends SubsystemBase{
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysId.dynamic(direction);
     }
-    public BooleanSupplier areBooleansEqual(Boolean double1, Boolean double2){
-        return () -> (double1 == double2);
+    public BooleanSupplier areDoublesEqual(Double double1, Double double2){
+        return () -> {return(double1 == double2);};
     }
     public Command moveToHeight(double height){
         // controller.setGoal(height);
@@ -172,7 +172,7 @@ public class Elevator extends SubsystemBase{
             setpoint.velocity = 0;
             return;
 
-        }).finallyDo(() -> {
+        }).until(areDoublesEqual(height, setpoint.position)).finallyDo(() -> {
             runMotors(kG);
         });};
 
