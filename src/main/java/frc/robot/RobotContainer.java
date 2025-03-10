@@ -15,9 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.*;
 import swervelib.SwerveInputStream;
 
 /**
@@ -55,6 +53,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
+  private final Camera camera = new Camera(drivebase);
 
 
 
