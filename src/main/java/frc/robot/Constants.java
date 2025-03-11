@@ -36,13 +36,13 @@ public final class Constants {
   public static double L1Rotation;
 
   public static double L2Height = 22.7;
-  public static double L2Rotation = 0.28;
+  public static double L2Rotation = 0.6;
 
   public static double L3Height = 57.5;
-  public static double L3Rotation = 0.28;
+  public static double L3Rotation = L2Rotation;
 
   public static double L4Height = 114;
   public static double L4Rotation = 0.35;
   
-  public static double transitionRotation = 0.3;
+  public static double transitionRotation = 0.6;
 }

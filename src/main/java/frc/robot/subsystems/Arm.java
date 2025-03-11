@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
    private SparkMax pivotMotor;
-   private DutyCycleEncoder pivotEncoder;
+   public static DutyCycleEncoder pivotEncoder;
    private double voltage = 0;
    private SparkMax intakeMotorTop;
    private SparkMax intakeMotorBottom;
@@ -164,5 +164,6 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putNumber("blue", color.getB());
       SmartDashboard.putNumber("sum", color.getR() + color.getB() + color.getG());
       SmartDashboard.putNumber("pivot pos", pivotEncoder.get());
+      SmartDashboard.putBoolean("isFinishedRotating", isFinishedRotating);
    }
 }

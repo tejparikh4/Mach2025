@@ -138,43 +138,43 @@ public class Elevator extends SubsystemBase{
     public Command moveToHeight(double height){
         // controller.setGoal(height);
         return startRun(() -> {
-            startTime = Timer.getFPGATimestamp();
-            startPos = getAverageEncoderPosition();
-            leftMotor.setVoltage(voltage);
-            rightMotor.setVoltage(-voltage);
-        },()->{
+                startTime = Timer.getFPGATimestamp();
+                startPos = getAverageEncoderPosition();
+            },()->{
+                if(Arm.pivotEncoder.get() < 0.6){return;}
 
-            // trapezoidal motion profile
-            setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height, 0));
 
-            // feedforward
-            System.out.println("MOVING TO HEIGHT");
-            SmartDashboard.putNumber("targetVel", setpoint.velocity);
-            SmartDashboard.putNumber("measuredLeftVelRPS", leftEncoder.getVelocity() / 60);
-            voltage = feedForward.calculateWithVelocities(lastSetpoint.velocity, setpoint.velocity);
-            
-            // pid
-            double error = setpoint.position - getAverageEncoderPosition();
-            SmartDashboard.putNumber("elevator error", error);
+                // trapezoidal motion profile
+                setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height, 0));
 
-            double output = kP * error;
-            SmartDashboard.putNumber("elevator pid output", output);
+                // feedforward
+                System.out.println("MOVING TO HEIGHT");
+                SmartDashboard.putNumber("targetVel", setpoint.velocity);
+                SmartDashboard.putNumber("measuredLeftVelRPS", leftEncoder.getVelocity() / 60);
+                voltage = feedForward.calculateWithVelocities(lastSetpoint.velocity, setpoint.velocity);
+                
+                // pid
+                double error = setpoint.position - getAverageEncoderPosition();
+                SmartDashboard.putNumber("elevator error", error);
 
-            voltage += output;
+                double output = kP * error;
+                SmartDashboard.putNumber("elevator pid output", output);
 
-            //position limiter
-            if(leftMotor.getEncoder().getPosition() > 115) {
-                voltage = 0;
-            }
+                voltage += output;
 
-            runMotors(voltage);
-            lastSetpoint = setpoint;
-            setpoint.velocity = 0;
-            return;
+                //position limiter
+                if(leftMotor.getEncoder().getPosition() > 115) {
+                    voltage = 0;
+                }
 
-        }).until(areDoublesEqual(height, setpoint.position)).finallyDo(() -> {
-            runMotors(kG);
-        });};
+                runMotors(voltage);
+                lastSetpoint = setpoint;
+                setpoint.velocity = 0;
+                return;
+
+            }).until(areDoublesEqual(height, setpoint.position)).finallyDo(() -> {
+                runMotors(kG);
+            });};
 
     // public void changekV(double amount) {
     //     kV += amount;

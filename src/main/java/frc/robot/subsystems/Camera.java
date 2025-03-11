@@ -23,22 +23,26 @@ import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.LimelightHelpers.RawFiducial;
 import edu.wpi.first.math.geometry.Translation2d;
-public class Camera {
+public class Camera extends SubsystemBase {
     swervelib.SwerveDrive drivebase;
     SwerveSubsystem swerve;
+    SwerveDrive swerveDrive;
     SwerveDrivePoseEstimator poseEstimator;
     String llName;
     
     public Camera(SwerveSubsystem swerve) {
         this.swerve = swerve;
+        swerveDrive = swerve.getSwerveDrive();
         poseEstimator = swerve.getSwerveDrive().swerveDrivePoseEstimator;
     }
 
     public void periodic() {
         boolean doRejectUpdate = false;
-        LimelightHelpers.SetRobotOrientation("limelight", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        SmartDashboard.putNumber("Gyro Rotation", swerveDrive.getGyro().getRotation3d().getZ());
+        LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getGyro().getRotation3d().getZ()/*poseEstimator.getEstimatedPosition().getRotation().getDegrees()*/, 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
         LimelightHelpers.RawFiducial[] rawFiducials = LimelightHelpers.getRawFiducials("limelight");
+        
         
         // if our angular velocity is greater than 360 degrees per second, ignore vision updates
         // if(Math.abs(m_gyro.getRate()) > 360)
