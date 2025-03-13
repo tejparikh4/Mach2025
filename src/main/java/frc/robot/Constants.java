@@ -30,8 +30,7 @@ public final class Constants {
   public static int intakeMotorBottomId=16;
 
   public static double intakeHeight = 0;
-  public static double intakeRotation = 0.22;
-
+  public static double intakeRotation = 0.55 ;
   public static double L1Height;
   public static double L1Rotation;
 
@@ -42,7 +41,7 @@ public final class Constants {
   public static double L3Rotation = L2Rotation;
 
   public static double L4Height = 114;
-  public static double L4Rotation = 0.35;
+  public static double L4Rotation = 0.65;
   
-  public static double transitionRotation = 0.6;
+  public static double transitionRotation = 0.61;
 }

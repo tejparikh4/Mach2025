@@ -86,6 +86,7 @@ public class Elevator extends SubsystemBase{
     private final MutAngle m_distance = Rotations.mutable(0);
     // Mutable holder for unit-safe rotational velocity values, persisted to avoid reallocation.
     private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+    boolean isFinished = false;
 
 
 
@@ -140,6 +141,7 @@ public class Elevator extends SubsystemBase{
         return startRun(() -> {
                 startTime = Timer.getFPGATimestamp();
                 startPos = getAverageEncoderPosition();
+                isFinished = false;
             },()->{
                 if(Arm.pivotEncoder.get() < 0.6){return;}
 
@@ -166,15 +168,20 @@ public class Elevator extends SubsystemBase{
                 if(leftMotor.getEncoder().getPosition() > 115) {
                     voltage = 0;
                 }
-
+                
                 runMotors(voltage);
                 lastSetpoint = setpoint;
                 setpoint.velocity = 0;
+                if(setpoint.position == height){
+                    isFinished = true;
+                }
                 return;
 
-            }).until(areDoublesEqual(height, setpoint.position)).finallyDo(() -> {
+            }).until(() -> isFinished)
+            .finallyDo(() -> {
                 runMotors(kG);
-            });};
+            });
+        };
 
     // public void changekV(double amount) {
     //     kV += amount;
@@ -240,7 +247,7 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("ff voltage", voltage);
         SmartDashboard.putNumber("setToVoltage", setToVoltage);
         SmartDashboard.putNumber("setpoint position", setpoint.position);
-        
+        SmartDashboard.putBoolean("Finished", isFinished);
         
     }
 

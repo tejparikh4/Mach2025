@@ -108,6 +108,7 @@ public class Arm extends SubsystemBase {
       return startRun(() -> {
          startTime = Timer.getFPGATimestamp();
          isFinishedRotating = false;
+         SmartDashboard.putBoolean("input detected", isFinishedRotating);
          // leftMotor.setVoltage(voltage);
          // rightMotor.setVoltage(-voltage);
       }, () -> {
