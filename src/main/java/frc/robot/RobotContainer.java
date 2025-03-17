@@ -6,15 +6,20 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.BusterAuto;
 import frc.robot.subsystems.*;
 import swervelib.SwerveInputStream;
 
@@ -56,6 +61,7 @@ public class RobotContainer {
   private final Camera camera = new Camera(drivebase);
 
 
+  private SendableChooser<String> chooserAuto;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -68,8 +74,21 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
+    // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
+
+    NamedCommands.registerCommand("L2", arm.moveToPosition(Constants.transitionRotation).andThen(
+      elevator.moveToHeight(Constants.L2Height)).andThen(
+      arm.moveToPosition(Constants.L2Rotation))
+    );
+
+    chooserAuto = new SendableChooser<String>();
+    chooserAuto.setDefaultOption("nothing", "nothing");
+    chooserAuto.addOption("leave", "leave");
+    chooserAuto.addOption("1 coral (IMPOSSIBLE)", "1 coral");
+    SmartDashboard.putData(chooserAuto);
+    
+
   }
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
@@ -86,6 +105,13 @@ public class RobotContainer {
                                         withControllerHeadingAxis(getRightX(), getRightY()).
                                         headingWhile(true);
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+
+
+
+  SwerveInputStream driveAngularVelocitySlow = driveAngularVelocity.copy()
+                                                .scaleTranslation(0.2);
+
+  Command driveFieldOrientedAngularVelocitySlow = drivebase.driveFieldOriented(driveAngularVelocitySlow);
 
 
   SwerveInputStream driveIntakeRight = driveAngularVelocity.copy()
@@ -111,7 +137,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
   
-    controller.circle().whileTrue(driveFieldOrientedFacingIntakeRight);
+    controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
@@ -119,13 +145,15 @@ public class RobotContainer {
     //controller.L2().whileTrue(arm.moveToPosition(0.28));
     controller2.rightBumper().whileTrue(arm.rotate(-0.25));
 
+    controller2.rightTrigger().whileTrue(arm.outtake(1));
+
 
     // controller.cross().whileTrue(elevator.setSpeed(-1));
     // controller.circle().whileTrue(arm.outtake(-0.5));
     // controller.square().whileTrue(arm.intake(0.5));
 
-    controller2.y().whileTrue(elevator.setSpeed(1));
-    controller2.a().whileTrue(elevator.setSpeed(-1));
+    controller2.y().whileTrue(elevator.setSpeed(3));
+    controller2.a().whileTrue(elevator.setSpeed(-2.5));
     controller2.x().whileTrue(arm.intake(0.5));
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -187,7 +215,8 @@ public class RobotContainer {
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-  return drivebase.getAutonomousCommand("maaan fuck this");
+    // return drivebase.getAutonomousCommand("straightauto");
+    return new BusterAuto(this, chooserAuto);
   }
 
   public DoubleSupplier getRightX() {

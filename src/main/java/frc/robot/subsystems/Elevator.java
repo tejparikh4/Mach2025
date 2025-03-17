@@ -49,8 +49,8 @@ public class Elevator extends SubsystemBase{
     private SparkClosedLoopController rightController;
     private double voltage = 0;
     private static double kDt = 0.02;
-    private static double kMaxVelocity = 20;
-    private static double kMaxAcceleration = 10;
+    private static double kMaxVelocity = Constants.kElevatorMaxVelocity;
+    private static double kMaxAcceleration = Constants.kElevatorMaxAcceleration;
 
     // kG + kS = 0.4
     // kG - kS = 0.14
@@ -76,7 +76,8 @@ public class Elevator extends SubsystemBase{
     private double startPos = 0;
 
     private double setToVoltage = 0;
-
+    
+    private boolean hasElevated = false;
 
     private SysIdRoutine sysId;
 
@@ -107,6 +108,7 @@ public class Elevator extends SubsystemBase{
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 // null, Volts.of(1), Time time(10, Seconds)
+
             ),
             new SysIdRoutine.Mechanism(
                 voltage -> {
@@ -150,7 +152,6 @@ public class Elevator extends SubsystemBase{
                 setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, new TrapezoidProfile.State(startPos, 0), new TrapezoidProfile.State(height, 0));
 
                 // feedforward
-                System.out.println("MOVING TO HEIGHT");
                 SmartDashboard.putNumber("targetVel", setpoint.velocity);
                 SmartDashboard.putNumber("measuredLeftVelRPS", leftEncoder.getVelocity() / 60);
                 voltage = feedForward.calculateWithVelocities(lastSetpoint.velocity, setpoint.velocity);
@@ -165,21 +166,36 @@ public class Elevator extends SubsystemBase{
                 voltage += output;
 
                 //position limiter
-                if(leftMotor.getEncoder().getPosition() > 115) {
+                if(height > startPos && leftMotor.getEncoder().getPosition() > Constants.L4Height) {
+                    System.out.println("top hard limit reached");
+                    voltage = 0;                                         
+                    isFinished = true;
+                }
+
+                if(height < startPos && getAverageEncoderPosition() < Constants.intakeHeight) {
+                    System.out.println("bottom hard limit reached");
                     voltage = 0;
+                    isFinished = true;
+                }
+
+                if(Math.abs(getAverageEncoderPosition() - height) < 0.1){
+                    // if (setpoint.position == height) {
+                    System.out.println("close enough reached");
+                    voltage = 0;
+                    isFinished = true;
+                    // }
                 }
                 
                 runMotors(voltage);
                 lastSetpoint = setpoint;
                 setpoint.velocity = 0;
-                if(setpoint.position == height){
-                    isFinished = true;
-                }
+                
                 return;
 
             }).until(() -> isFinished)
             .finallyDo(() -> {
                 runMotors(kG);
+                System.out.println("FINISHED");
             });
         };
 

@@ -109,6 +109,8 @@ public class Arm extends SubsystemBase {
          startTime = Timer.getFPGATimestamp();
          isFinishedRotating = false;
          SmartDashboard.putBoolean("input detected", isFinishedRotating);
+
+         System.out.println("arm start moving to position");
          // leftMotor.setVoltage(voltage);
          // rightMotor.setVoltage(-voltage);
       }, () -> {
@@ -126,9 +128,9 @@ public class Arm extends SubsystemBase {
          SmartDashboard.putNumber("arm error", error);
          if(Math.abs(error) > 0.01){
             if(error < 0) {
-               pivotMotor.set(0.3);
+               pivotMotor.set(Constants.pivotSpeed);
             } else {
-               pivotMotor.set(-0.3);
+               pivotMotor.set(-Constants.pivotSpeed);
             }
          } else {
             pivotMotor.set(0);
@@ -137,6 +139,8 @@ public class Arm extends SubsystemBase {
       })
       .until(() -> isFinishedRotating)
       .finallyDo(() -> {
+         System.out.println("arm finished moving to position");
+
          voltage = 0;
          pivotMotor.setVoltage(0);
       });
