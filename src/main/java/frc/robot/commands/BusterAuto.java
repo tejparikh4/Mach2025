@@ -31,7 +31,7 @@ public class BusterAuto extends SequentialCommandGroup {
                 break;
             case "1 coral":
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("1 coral");
-                addCommands(new PathPlannerAuto("1 coral auto"));
+                addCommands(new PathPlannerAuto("1 coral auto left"));
                 break;
         }
     }
