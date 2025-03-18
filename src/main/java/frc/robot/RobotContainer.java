@@ -31,7 +31,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
+  private final Joystick controller = new Joystick(Constants.kDriverControllerPort);
   private final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -96,7 +96,7 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                               () -> -controller.getRawAxis(translationAxis),
                                                               () -> -controller.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(() -> -controller.getRightX())
+                                                              .withControllerRotationAxis(() -> -controller.getRawAxis(rotationAxis))
                                                               .deadband(0.1)
                                                               .scaleTranslation(1.2)
                                                               .allianceRelativeControl(true);
@@ -139,8 +139,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
   
-    controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
-    controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    // controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
+    // controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
@@ -222,10 +222,10 @@ public class RobotContainer {
   }
 
   public DoubleSupplier getRightX() {
-    return () -> {return controller2.getRawAxis(rotationAxis);};
+    return () -> {return controller.getRawAxis(rotationAxis);};
   }
 
   public DoubleSupplier getRightY() {
-    return () -> {return controller2.getRawAxis(XboxController.Axis.kRightY.value);};
+    return () -> {return controller.getRawAxis(XboxController.Axis.kRightY.value);};
   }
 }

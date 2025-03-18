@@ -60,7 +60,7 @@ public class Elevator extends SubsystemBase{
     private static double kG = 0.3;
     private static double kS = 0.14;
     private static double kV = 0.01;
-    private static double kA = 0.003;
+    private static double kA = 0.002;
 
     private static double kP = 1;
     // private static double kI = 0.0;
@@ -164,7 +164,7 @@ public class Elevator extends SubsystemBase{
                 double output = kP * error;
                 SmartDashboard.putNumber("elevator pid voltage", output);
 
-                // voltage += output;
+                voltage += output;
 
                 //position limiter
                 if(height > startPos && leftMotor.getEncoder().getPosition() > Constants.L4Height) {
