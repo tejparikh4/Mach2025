@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.RawFiducial;
 import swervelib.SwerveDrive;
-public class Camera extends SubsystemBase {
+public class Camera {
     swervelib.SwerveDrive drivebase;
     SwerveSubsystem swerve;
     SwerveDrive swerveDrive;
@@ -19,7 +19,7 @@ public class Camera extends SubsystemBase {
         poseEstimator = swerveDrive.swerveDrivePoseEstimator;
     }
 
-    @Override
+    
     public void periodic() {
         boolean doRejectUpdate = false;
         SmartDashboard.putNumber("Gyro Rotation", swerveDrive.getGyro().getRotation3d().getZ());
