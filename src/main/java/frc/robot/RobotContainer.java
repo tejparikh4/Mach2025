@@ -80,9 +80,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2",
       arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.L2Height)).andThen(
-      arm.moveToPosition(Constants.L2Rotation)).andThen(
-        arm.outtake(.25))
+      arm.moveToPosition(Constants.L2Rotation))
     );
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.25));
 
     chooserAuto = new SendableChooser<String>();
     chooserAuto.setDefaultOption("nothing", "nothing");
