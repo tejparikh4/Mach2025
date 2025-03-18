@@ -77,7 +77,8 @@ public class RobotContainer {
     // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
 
-    NamedCommands.registerCommand("L2", arm.moveToPosition(Constants.transitionRotation).andThen(
+    NamedCommands.registerCommand("L2",
+      arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.L2Height)).andThen(
       arm.moveToPosition(Constants.L2Rotation))
     );

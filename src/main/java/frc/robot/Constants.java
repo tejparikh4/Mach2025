@@ -14,7 +14,7 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final float maxSpeed = 3f;
+  public static final float maxSpeed = 1f;
   public static final int armId = 17;
 
   public static final int elevatorLeftId = 13; //not the right one yet
@@ -22,8 +22,8 @@ public final class Constants {
   public static final double kElevatorGearRatio = 20;
   public static final double kElevatorGearDiameter = 1.757; // inches
   public static double elevatorConstant = 1 / (kElevatorGearDiameter * Math.PI) * kElevatorGearRatio;
-  public static final double kElevatorMaxVelocity  = 80;
-  public static final double kElevatorMaxAcceleration = 40;
+  public static final double kElevatorMaxVelocity  = 20;
+  public static final double kElevatorMaxAcceleration = 10;
   
 
   public static final int kDriverControllerPort = 0;

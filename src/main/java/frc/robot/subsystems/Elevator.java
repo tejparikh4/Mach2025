@@ -59,8 +59,8 @@ public class Elevator extends SubsystemBase{
 
     private static double kG = 0.3;
     private static double kS = 0.14;
-    private static double kV = 0.112;
-    private static double kA = 0.011;
+    private static double kV = 0.01;
+    private static double kA = 0.003;
 
     private static double kP = 1;
     // private static double kI = 0.0;
@@ -155,15 +155,16 @@ public class Elevator extends SubsystemBase{
                 SmartDashboard.putNumber("targetVel", setpoint.velocity);
                 SmartDashboard.putNumber("measuredLeftVelRPS", leftEncoder.getVelocity() / 60);
                 voltage = feedForward.calculateWithVelocities(lastSetpoint.velocity, setpoint.velocity);
-                
+                SmartDashboard.putNumber("ff voltage", voltage);
+
                 // pid
                 double error = setpoint.position - getAverageEncoderPosition();
                 SmartDashboard.putNumber("elevator error", error);
 
                 double output = kP * error;
-                SmartDashboard.putNumber("elevator pid output", output);
+                SmartDashboard.putNumber("elevator pid voltage", output);
 
-                voltage += output;
+                // voltage += output;
 
                 //position limiter
                 if(height > startPos && leftMotor.getEncoder().getPosition() > Constants.L4Height) {
@@ -259,8 +260,8 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("rightEncoderPos", rightEncoder.getPosition());
         SmartDashboard.putNumber("averageElevatorEncoderPos", getAverageEncoderPosition());
         SmartDashboard.putNumber("averageElevatorEncoderVel", getAverageEncoderVelocity());
-        SmartDashboard.putNumber("setpoint", setpoint.velocity);
-        SmartDashboard.putNumber("ff voltage", voltage);
+        SmartDashboard.putNumber("setpoint velocity", setpoint.velocity);
+        SmartDashboard.putNumber("total elevator voltage", voltage);
         SmartDashboard.putNumber("setToVoltage", setToVoltage);
         SmartDashboard.putNumber("setpoint position", setpoint.position);
         SmartDashboard.putBoolean("Finished", isFinished);
