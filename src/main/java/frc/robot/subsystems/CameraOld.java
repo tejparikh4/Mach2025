@@ -14,7 +14,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class CameraOld extends SubsystemBase {
+public class CameraOld {
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");

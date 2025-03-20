@@ -35,6 +35,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -76,6 +77,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // PigeonIMU gyro;
     private PigeonIMU gyro = new PigeonIMU(35);
+
+    double offset = 0;
 
 
     public SwerveSubsystem(){try
@@ -161,6 +164,9 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("offset", offset);
+    SmartDashboard.putNumber("gyro something", gyro.getYaw());
+  
   }
 
   @Override
@@ -280,14 +286,20 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void zeroGyro() {
-    setGyro(0);
+    setGyroDegrees(0);
   }
 
-  public void setGyro(double angle) {
-    // gyro.setYaw(angle);
-    // gyro.setFusedHeading(angle);
+  public void setGyroDegrees(double angle) {
+    System.out.println(gyro.setYaw(angle));
+    System.out.println(gyro.setFusedHeading(angle));
+    // offset -= swerveDrive.getGyro().getRotation3d().getZ();
+    // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offset));
     Pose2d currentPose = getPose();
     resetOdometry(new Pose2d(currentPose.getX(), currentPose.getY(), new Rotation2d()));
+  }
+
+  public double getGyroRaw() {
+    return gyro.getYaw();
   }
 
   public void stopAutoCentering() {

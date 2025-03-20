@@ -22,8 +22,8 @@ public final class Constants {
   public static final double kElevatorGearRatio = 20;
   public static final double kElevatorGearDiameter = 1.757; // inches
   public static double elevatorConstant = 1 / (kElevatorGearDiameter * Math.PI) * kElevatorGearRatio;
-  public static final double kElevatorMaxVelocity  = 40;
-  public static final double kElevatorMaxAcceleration = 30;
+  public static final double kElevatorMaxVelocity  = 80;
+  public static final double kElevatorMaxAcceleration = 80;
   
 
   public static final int kDriverControllerPort = 0;
@@ -32,13 +32,13 @@ public final class Constants {
   public static int intakeMotorBottomId=16;
 
   public static double intakeHeight = 1;
-  public static double intakeRotation = 0.52;
+  public static double intakeRotation = 0.53;
 
   public static double L1Height = 1;
-  public static double L1Rotation = 0.6;
+  public static double L1Rotation = 0.59;
 
-  public static double L2Height = 22.7;
-  public static double L2Rotation = 0.6;
+  public static double L2Height = 26;
+  public static double L2Rotation = 0.59;
 
   public static double L3Height = 57.5;
   public static double L3Rotation = L2Rotation;

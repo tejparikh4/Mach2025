@@ -55,12 +55,17 @@ public class Elevator extends SubsystemBase{
     // kG + kS = 0.4
     // kG - kS = 0.14
     // kG = 0.27
-    // kS = 0.13
+    // kS = 0.13 OLD
 
-    private static double kG = 0.3;
-    private static double kS = 0.14;
-    private static double kV = 0.01;
-    private static double kA = 0.002;
+    // kg+ks=0.56
+    // kg-ks=-0.16
+    // kg=0.2
+    // ks=0.36
+
+    private static double kG = 0.2;
+    private static double kS = 0.36;
+    private static double kV = 0.12;
+    private static double kA = 0.00;
 
     private static double kP = 1;
     // private static double kI = 0.0;
@@ -265,6 +270,7 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("setToVoltage", setToVoltage);
         SmartDashboard.putNumber("setpoint position", setpoint.position);
         SmartDashboard.putBoolean("Finished", isFinished);
+        SmartDashboard.putNumber("12", 12);
         
     }
 

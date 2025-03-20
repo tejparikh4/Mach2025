@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.RawFiducial;
 import swervelib.SwerveDrive;
-public class Camera {
+public class Camera extends SubsystemBase {
     swervelib.SwerveDrive drivebase;
     SwerveSubsystem swerve;
     SwerveDrive swerveDrive;
@@ -23,7 +23,8 @@ public class Camera {
     public void periodic() {
         boolean doRejectUpdate = false;
         SmartDashboard.putNumber("Gyro Rotation", swerveDrive.getGyro().getRotation3d().getZ());
-        LimelightHelpers.SetRobotOrientation("", swerveDrive.getGyro().getRotation3d().getZ()/*poseEstimator.getEstimatedPosition().getRotation().getDegrees()*/, 0, 0, 0, 0, 0);
+        // LimelightHelpers.SetRobotOrientation("", swerveDrive.getGyro().getRotation3d().getZ() * 180 / Math.PI/*poseEstimator.getEstimatedPosition().getRotation().getDegrees()*/, 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation("", swerve.getGyroRaw(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
         LimelightHelpers.RawFiducial[] rawFiducials = LimelightHelpers.getRawFiducials("");
         
@@ -48,10 +49,10 @@ public class Camera {
             SmartDashboard.putNumber("closestFiducial", closestFiducial);
             double std = 0.3 + closestFiducial * 0.4;
             SmartDashboard.putNumber("sexually transmitted disease", std);
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(std,std,9999999));
-            poseEstimator.addVisionMeasurement(
-                mt2.pose,
-                mt2.timestampSeconds);
+            // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(std,std,9999999));
+            // poseEstimator.addVisionMeasurement(
+            //     mt2.pose,
+            //     mt2.timestampSeconds);
         }
     }
 

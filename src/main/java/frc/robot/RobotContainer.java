@@ -31,7 +31,8 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  private final Joystick controller = new Joystick(Constants.kDriverControllerPort);
+  // private final Joystick controller = new Joystick(Constants.kDriverControllerPort);
+  private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
   private final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -96,9 +97,9 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                               () -> -controller.getRawAxis(translationAxis),
                                                               () -> -controller.getRawAxis(strafeAxis))
-                                                              .withControllerRotationAxis(() -> -controller.getRawAxis(rotationAxis))
+                                                              .withControllerRotationAxis(() -> -controller.getRightX())
                                                               .deadband(0.1)
-                                                              .scaleTranslation(1.2)
+                                                              // .scaleTranslation(1.2)
                                                               .allianceRelativeControl(true);
   Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
@@ -140,7 +141,7 @@ public class RobotContainer {
   private void configureBindings() {
   
     // controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
-    // controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
@@ -199,9 +200,10 @@ public class RobotContainer {
     // //
     // // controller.pov(0).whileTrue(arm.outtake(0.5));
     // // controller.pov(180).whileTrue(arm.outtake(-.5));
+    controller.cross().whileTrue(elevator.setSpeed());
 
-    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
-    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
+    controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
+    controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
   }
 
