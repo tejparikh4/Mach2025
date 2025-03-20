@@ -23,8 +23,8 @@ public class Camera extends SubsystemBase {
     public void periodic() {
         boolean doRejectUpdate = false;
         SmartDashboard.putNumber("Gyro Rotation", swerveDrive.getGyro().getRotation3d().getZ());
-        // LimelightHelpers.SetRobotOrientation("", swerveDrive.getGyro().getRotation3d().getZ() * 180 / Math.PI/*poseEstimator.getEstimatedPosition().getRotation().getDegrees()*/, 0, 0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation("", swerve.getGyroRaw(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation("", swerveDrive.getGyro().getRotation3d().getZ() * 180 / Math.PI/*poseEstimator.getEstimatedPosition().getRotation().getDegrees()*/, 0, 0, 0, 0, 0);
+        // LimelightHelpers.SetRobotOrientation("", swerve.getGyroRaw(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
         LimelightHelpers.RawFiducial[] rawFiducials = LimelightHelpers.getRawFiducials("");
         

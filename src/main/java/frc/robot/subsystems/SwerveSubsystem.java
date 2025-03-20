@@ -76,8 +76,9 @@ public class SwerveSubsystem extends SubsystemBase {
     SlewRateLimiter thetaLimiter = new SlewRateLimiter(0.001);
 
     // PigeonIMU gyro;
-    private PigeonIMU gyro = new PigeonIMU(35);
-
+    // private PigeonIMU gyro = new PigeonIMU(35);
+   
+      
     double offset = 0;
 
 
@@ -165,7 +166,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("offset", offset);
-    SmartDashboard.putNumber("gyro something", gyro.getYaw());
+    SmartDashboard.putNumber("gyro yaw", swerveDrive.getGyro().getRotation3d().getZ());
   
   }
 
@@ -290,17 +291,13 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void setGyroDegrees(double angle) {
-    System.out.println(gyro.setYaw(angle));
-    System.out.println(gyro.setFusedHeading(angle));
+    swerveDrive.zeroGyro();
     // offset -= swerveDrive.getGyro().getRotation3d().getZ();
     // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offset));
-    Pose2d currentPose = getPose();
-    resetOdometry(new Pose2d(currentPose.getX(), currentPose.getY(), new Rotation2d()));
+    // Pose2d currentPose = getPose();
+    // resetOdometry(new Pose2d(currentPose.getX(), currentPose.getY(), new Rotation2d()));
   }
 
-  public double getGyroRaw() {
-    return gyro.getYaw();
-  }
 
   public void stopAutoCentering() {
     swerveDrive.setAutoCenteringModules(false);
