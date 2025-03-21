@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -12,6 +15,9 @@ public class Camera extends SubsystemBase {
     SwerveDrive swerveDrive;
     SwerveDrivePoseEstimator poseEstimator;
     String llName;
+
+    StructPublisher<Pose2d> limelightPublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("limelightOdometry", Pose2d.struct).publish();
     
     public Camera(SwerveSubsystem swerve) {
         this.swerve = swerve;
@@ -27,6 +33,7 @@ public class Camera extends SubsystemBase {
         // LimelightHelpers.SetRobotOrientation("", swerve.getGyroRaw(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
         LimelightHelpers.RawFiducial[] rawFiducials = LimelightHelpers.getRawFiducials("");
+
         
         
         // if our angular velocity is greater than 360 degrees per second, ignore vision updates
@@ -47,12 +54,17 @@ public class Camera extends SubsystemBase {
                 }
             }
             SmartDashboard.putNumber("closestFiducial", closestFiducial);
-            double std = 0.3 + closestFiducial * 0.4;
-            SmartDashboard.putNumber("sexually transmitted disease", std);
+            // double std = 0.3 + closestFiducial * 0.4;
+
+            double[] stds = NetworkTableInstance.getDefault().getTable("limelight").getEntry("stddevs").getDoubleArray(new double[6]);
+            SmartDashboard.putNumber("std x", stds[6]);
+            SmartDashboard.putNumber("std y", stds[7]);
             // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(std,std,9999999));
             // poseEstimator.addVisionMeasurement(
             //     mt2.pose,
             //     mt2.timestampSeconds);
+
+            limelightPublisher.set(mt2.pose);
         }
     }
 

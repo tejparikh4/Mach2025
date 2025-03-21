@@ -42,6 +42,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -78,8 +80,8 @@ public class SwerveSubsystem extends SubsystemBase {
     // PigeonIMU gyro;
     // private PigeonIMU gyro = new PigeonIMU(35);
    
-      
-    double offset = 0;
+    StructPublisher<Pose2d> odometryPublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("hweelOdometry", Pose2d.struct).publish();
 
 
     public SwerveSubsystem(){try
@@ -165,9 +167,9 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("offset", offset);
     SmartDashboard.putNumber("gyro yaw", swerveDrive.getGyro().getRotation3d().getZ());
-  
+    
+    odometryPublisher.set(swerveDrive.getPose());
   }
 
   @Override
