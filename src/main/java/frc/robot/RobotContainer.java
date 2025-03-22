@@ -5,9 +5,14 @@
 package frc.robot;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
@@ -56,10 +61,10 @@ public class RobotContainer {
   /* Subsystems */
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
-  private final Arm arm = new Arm();
-  private final Elevator elevator = new Elevator();
-  private final Camera camera = new Camera(drivebase);
+  public final SwerveSubsystem drivebase = new SwerveSubsystem();
+  public final Arm arm = new Arm();
+  public final Elevator elevator = new Elevator();
+  public final Camera camera = new Camera(drivebase);
 
 
   private SendableChooser<String> chooserAuto;
@@ -128,6 +133,14 @@ public class RobotContainer {
                                         .headingWhile(true);
 
   Command driveFieldOrientedFacingIntakeLeft = drivebase.driveFieldOriented(driveIntakeLeft);
+
+
+
+  SwerveInputStream driveToPose = driveAngularVelocity.copy()
+                                    .driveToPose(() -> {return new Pose2d(6.5,3,new Rotation2d(Math.PI));}, new ProfiledPIDController(0.1, 0, 0, new TrapezoidProfile.Constraints(0.2, 0.2)), new ProfiledPIDController(0.1, 0, 0, new TrapezoidProfile.Constraints(0.1, 0.1)));
+
+  Command driveToPoseCommand = drivebase.driveFieldOriented(driveToPose);
+                                                  
   
   /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -142,7 +155,7 @@ public class RobotContainer {
   
     // controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-
+    controller.share().onTrue(new InstantCommand(() -> drivebase.resetOdometry(camera.getPose())));
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
     //controller.L2().whileTrue(arm.moveToPosition(0.28));
@@ -186,24 +199,29 @@ public class RobotContainer {
     );
 
 
+    controller.cross().whileTrue(
+      new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
+      drivebase.driveToPose(new Pose2d(2.75, 5.75, Rotation2d.fromDegrees(0)))).handleInterrupt(
+      () -> drivebase.setIsPathfinding(false)).andThen(
+      new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+    );
+
+
+
+
+    // sysid
+
     // controller.cross().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
     // controller.circle().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
-
-
     // controller.square().whileTrue(elevator.sysIdDynamic(Direction.kForward));
     // controller.triangle().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
 
-    // controller.triangle().whileTrue(arm.intake(0.5));
-    // controller.triangle().whileTrue(elevator.moveToHeight(114));
 
-    // controller.share().onTrue(new InstantCommand(() -> elevator.zeroEncoders()));
-    // //
-    // // controller.pov(0).whileTrue(arm.outtake(0.5));
-    // // controller.pov(180).whileTrue(arm.outtake(-.5));
-    controller.cross().whileTrue(elevator.setSpeed());
+    // kG and kS tuning
 
-    controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
-    controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
+    // controller.cross().whileTrue(elevator.setSpeed());
+    // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
+    // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
   }
 

@@ -8,6 +8,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 
@@ -31,7 +32,10 @@ public class BusterAuto extends SequentialCommandGroup {
                 break;
             case "1 coral":
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("1 coral");
-                addCommands(new PathPlannerAuto("1 coral auto left"));
+                
+                addCommands(
+                    new InstantCommand(() -> robotContainer.drivebase.setGyroDegrees(180)),
+                    new PathPlannerAuto("1 coral auto left"));
                 break;
         }
     }

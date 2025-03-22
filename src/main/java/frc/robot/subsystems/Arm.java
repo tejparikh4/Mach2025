@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
          endIntake = false;
       }, () -> {
          colorSum = color.getR() + color.getB() + color.getG();
-         if (colorSum > 500) {
+         if (colorSum > Constants.colorSumThreshold) {
             isCoral = true;
          } else {
             isCoral = false;
@@ -170,5 +170,8 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putNumber("sum", color.getR() + color.getB() + color.getG());
       SmartDashboard.putNumber("pivot pos", pivotEncoder.get());
       SmartDashboard.putBoolean("isFinishedRotating", isFinishedRotating);
+      if (pivotEncoder.get() == 1) {
+         System.out.println("arm pivot encoder no worky");
+      }
    }
 }

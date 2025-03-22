@@ -44,6 +44,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -82,6 +83,9 @@ public class SwerveSubsystem extends SubsystemBase {
    
     StructPublisher<Pose2d> odometryPublisher = NetworkTableInstance.getDefault()
       .getStructTopic("hweelOdometry", Pose2d.struct).publish();
+
+    
+    private boolean isPathfinding;
 
 
     public SwerveSubsystem(){try
@@ -170,6 +174,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("gyro yaw", swerveDrive.getGyro().getRotation3d().getZ());
     
     odometryPublisher.set(swerveDrive.getPose());
+    SmartDashboard.putBoolean("isPathfinding", isPathfinding);
   }
 
   @Override
@@ -247,9 +252,9 @@ public class SwerveSubsystem extends SubsystemBase {
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(9.0, 0.0, 0.0),
+              new PIDConstants(0.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              new PIDConstants(0.0, 0.0, 0.0)
               // Rotation PID constants
           ),
           config,
@@ -289,11 +294,12 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void zeroGyro() {
-    setGyroDegrees(0);
+    swerveDrive.zeroGyro();
+    // setGyroDegrees(0);
   }
 
   public void setGyroDegrees(double angle) {
-    swerveDrive.zeroGyro();
+    swerveDrive.setGyro(new Rotation3d(0, 0, 0 - swerveDrive.getGyro().getRawRotation3d().getZ()));
     // offset -= swerveDrive.getGyro().getRotation3d().getZ();
     // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offset));
     // Pose2d currentPose = getPose();
@@ -303,5 +309,24 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void stopAutoCentering() {
     swerveDrive.setAutoCenteringModules(false);
+  }
+
+  public Command driveToPose(Pose2d targetPose) {
+    PathConstraints constraints = new PathConstraints(1, 1, 1, 1);
+
+    return AutoBuilder.pathfindToPose(
+      targetPose,
+      constraints,
+      0
+    );
+                              
+  }
+
+  public boolean getIsPathfinding() {
+    return isPathfinding;
+  }
+
+  public void setIsPathfinding(boolean isPathfinding) {
+    this.isPathfinding = isPathfinding;
   }
 }

@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Arrays;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -49,4 +54,11 @@ public final class Constants {
   public static double transitionRotation = 0.61;
 
   public static double pivotSpeed = 0.45;
+
+  public static double colorSumThreshold = 350;
+
+  public static double closestFiducialIgnoreThreshold = 4;
+
+
+
 }
