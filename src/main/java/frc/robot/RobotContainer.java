@@ -206,6 +206,20 @@ public class RobotContainer {
       new InstantCommand(() -> drivebase.setIsPathfinding(false)))
     );
 
+    controller.L1().whileTrue(
+      new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
+      new InstantCommand(() -> drivebase.alignToReef(-1))).handleInterrupt(
+      () -> drivebase.setIsPathfinding(false)).andThen(
+      new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+    );
+
+    controller.R1().whileTrue(
+      new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
+        new InstantCommand(() -> drivebase.alignToReef(1))).handleInterrupt(
+      () -> drivebase.setIsPathfinding(false)).andThen(
+      new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+    );
+
 
 
 

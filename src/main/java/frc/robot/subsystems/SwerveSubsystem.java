@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Apriltags;
 import frc.robot.Constants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
@@ -83,6 +84,9 @@ public class SwerveSubsystem extends SubsystemBase {
    
     StructPublisher<Pose2d> odometryPublisher = NetworkTableInstance.getDefault()
       .getStructTopic("hweelOdometry", Pose2d.struct).publish();
+
+    StructPublisher<Pose2d> alignTargetPublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("alignTarget", Pose2d.struct).publish();
 
     
     private boolean isPathfinding;
@@ -320,6 +324,13 @@ public class SwerveSubsystem extends SubsystemBase {
       0
     );
                               
+  }
+
+  public void alignToReef(int side) {
+    Pose2d nearestTag = getPose().nearest(Apriltags.tagLocations);
+    Pose2d targetPose = Apriltags.getTargetLocation(nearestTag, side);
+    alignTargetPublisher.set(targetPose);
+    // return driveToPose(targetPose);
   }
 
   public boolean getIsPathfinding() {
