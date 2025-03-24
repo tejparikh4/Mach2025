@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Apriltags;
 import frc.robot.Constants;
@@ -87,9 +89,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
     StructPublisher<Pose2d> alignTargetPublisher = NetworkTableInstance.getDefault()
       .getStructTopic("alignTarget", Pose2d.struct).publish();
+    
+    StructPublisher<Pose2d> aprilTagPublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("aprilTag", Pose2d.struct).publish();
+
+    StructPublisher<Pose2d> targetPosePublisher = NetworkTableInstance.getDefault()
+      .getStructTopic("pathTargetPose", Pose2d.struct).publish();
 
     
     private boolean isPathfinding;
+    private Supplier<Pose2d> targetPose = () -> new Pose2d();
 
 
     public SwerveSubsystem(){try
@@ -178,7 +187,11 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("gyro yaw", swerveDrive.getGyro().getRotation3d().getZ());
     
     odometryPublisher.set(swerveDrive.getPose());
+
+
     SmartDashboard.putBoolean("isPathfinding", isPathfinding);
+
+    
   }
 
   @Override
@@ -256,9 +269,9 @@ public class SwerveSubsystem extends SubsystemBase {
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(0.0, 0.0, 0.0),
+              new PIDConstants(3.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(0.0, 0.0, 0.0)
+              new PIDConstants(3.0, 0.0, 0.0)
               // Rotation PID constants
           ),
           config,
@@ -315,22 +328,36 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setAutoCenteringModules(false);
   }
 
-  public Command driveToPose(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(1, 1, 1, 1);
-
-    return AutoBuilder.pathfindToPose(
-      targetPose,
-      constraints,
-      0
+  public Command driveToPose(int side) {
+    return new InstantCommand(() -> {
+        System.out.println("drive to pose run");
+        Pose2d nearestTag = getPose().nearest(Apriltags.tagLocations);
+        aprilTagPublisher.set(nearestTag);
+        targetPose = () -> Apriltags.getTargetLocation(nearestTag, side);
+        alignTargetPublisher.set(targetPose.get());
+        // this.commandToRunAfterFiguringOutPose = driveToPose();
+        System.out.println("found targetpose");
+        // CommandScheduler.getInstance().schedule(pathFindToPose());
+      }
     );
                               
   }
 
-  public void alignToReef(int side) {
-    Pose2d nearestTag = getPose().nearest(Apriltags.tagLocations);
-    Pose2d targetPose = Apriltags.getTargetLocation(nearestTag, side);
-    alignTargetPublisher.set(targetPose);
-    // return driveToPose(targetPose);
+  public Command pathFindToPose() {
+    PathConstraints constraints = new PathConstraints(1, 1, 1, 1);
+
+    return AutoBuilder.pathfindToPose(
+      targetPose.get(),
+      constraints,
+      0
+    );
+  }
+
+  // private Command commandToRunAfterFiguringOutPose = new InstantCommand(() -> {});
+  public Command alignToReef() {
+    return new InstantCommand(() -> {
+      
+    });
   }
 
   public boolean getIsPathfinding() {

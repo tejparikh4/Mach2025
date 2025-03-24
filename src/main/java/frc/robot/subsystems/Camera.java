@@ -33,6 +33,10 @@ public class Camera extends SubsystemBase {
         LimelightHelpers.SetRobotOrientation("", swerveDrive.getGyro().getRotation3d().getZ() * 180 / Math.PI/*poseEstimator.getEstimatedPosition().getRotation().getDegrees()*/, 0, 0, 0, 0, 0);
         // LimelightHelpers.SetRobotOrientation("", swerve.getGyroRaw(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+        if (mt2 == null) {
+            System.out.println("limelight no worky");
+            return;
+        }
         LimelightHelpers.RawFiducial[] rawFiducials = LimelightHelpers.getRawFiducials("");
 
         
@@ -58,6 +62,8 @@ public class Camera extends SubsystemBase {
             doRejectUpdate = true;
         }
 
+        SmartDashboard.putBoolean("doRejectUpdate", doRejectUpdate);
+
         if(!doRejectUpdate)
         {
             
@@ -68,10 +74,10 @@ public class Camera extends SubsystemBase {
             SmartDashboard.putNumber("std x", stds[6]);
             SmartDashboard.putNumber("std y", stds[7]);
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(stds[6], stds[7], 9999999));
+            SmartDashboard.putNumber("mt2 rotation2d", mt2.pose.getRotation().getDegrees());
             poseEstimator.addVisionMeasurement(
                 mt2.pose,
                 mt2.timestampSeconds);
-
             limelightPublisher.set(mt2.pose);
         }
     }

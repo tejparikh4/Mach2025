@@ -124,6 +124,10 @@ public class Arm extends SubsystemBase {
          // // SmartDashboard.putNumber("measured Velocity", ArmEncoder.getVelocity());
          // voltage = feedForward.calculateWithVelocities(setpoint.position, lastSetpoint.velocity, setpoint.velocity);
          // pivotMotor.setVoltage(voltage);
+         if (pivotEncoder.get() == 1) {
+            System.out.println("arm pivot encoder no worky");
+            return;
+         }
          double error = pivotEncoder.get() - angle;
          SmartDashboard.putNumber("arm error", error);
          if(Math.abs(error) > 0.01){
@@ -170,8 +174,6 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putNumber("sum", color.getR() + color.getB() + color.getG());
       SmartDashboard.putNumber("pivot pos", pivotEncoder.get());
       SmartDashboard.putBoolean("isFinishedRotating", isFinishedRotating);
-      if (pivotEncoder.get() == 1) {
-         System.out.println("arm pivot encoder no worky");
-      }
+      
    }
 }

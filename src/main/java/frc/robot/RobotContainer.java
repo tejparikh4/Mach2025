@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -199,29 +200,30 @@ public class RobotContainer {
     );
 
 
-    controller.cross().whileTrue(
-      new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
-      drivebase.driveToPose(new Pose2d(2.75, 5.75, Rotation2d.fromDegrees(0)))).handleInterrupt(
-      () -> drivebase.setIsPathfinding(false)).andThen(
-      new InstantCommand(() -> drivebase.setIsPathfinding(false)))
-    );
+    // controller.cross().whileTrue(
+    //   new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
+    //   drivebase.driveToPose(new Pose2d(2.75, 5.75, Rotation2d.fromDegrees(0)))).handleInterrupt(
+    //   () -> drivebase.setIsPathfinding(false)).andThen(
+    //   new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+    // );
 
-    controller.L1().whileTrue(
-      new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
-      new InstantCommand(() -> drivebase.alignToReef(-1))).handleInterrupt(
-      () -> drivebase.setIsPathfinding(false)).andThen(
-      new InstantCommand(() -> drivebase.setIsPathfinding(false)))
-    );
+    // controller.L1().whileTrue(
+    //   new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
+    //   drivebase.alignToReef(-1)).handleInterrupt(
+    //   () -> drivebase.setIsPathfinding(false)).andThen(
+    //   new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+    // );
+
+    // controller.R1().whileTrue(
+    //   new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
+    //   drivebase.alignToReef(1)).handleInterrupt(
+    //   () -> drivebase.setIsPathfinding(false)).andThen(
+    //   new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+    // );
 
     controller.R1().whileTrue(
-      new InstantCommand(() -> drivebase.setIsPathfinding(true)).andThen(
-        new InstantCommand(() -> drivebase.alignToReef(1))).handleInterrupt(
-      () -> drivebase.setIsPathfinding(false)).andThen(
-      new InstantCommand(() -> drivebase.setIsPathfinding(false)))
+      new InstantCommand(() -> scheduleDriveToPose())
     );
-
-
-
 
     // sysid
 
@@ -237,6 +239,14 @@ public class RobotContainer {
     // controller.pov(0).onTrue(new InstantCommand(() -> elevator.changeSpeed(0.01)));
     // controller.pov(180).onTrue(new InstantCommand(() -> elevator.changeSpeed(-0.01)));
 
+  }
+
+  public void scheduleDriveToPose() {
+    CommandScheduler.getInstance().schedule(
+      new InstantCommand(() -> drivebase.setIsPathfinding(true))/* */.andThen(
+      (drivebase.driveToPose(1))).handleInterrupt(
+      () -> drivebase.setIsPathfinding(false)).andThen(
+      new InstantCommand(() -> drivebase.setIsPathfinding(false))));
   }
 
   public void teleopInit() {
