@@ -191,6 +191,10 @@ public class Elevator extends SubsystemBase{
                     isFinished = true;
                     // }
                 }
+
+                if(height == setpoint.position) {
+                    isFinished = true;
+                }
                 
                 runMotors(voltage);
                 lastSetpoint = setpoint;

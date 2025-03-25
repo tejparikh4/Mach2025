@@ -84,12 +84,21 @@ public class RobotContainer {
     // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
 
-    NamedCommands.registerCommand("L2",
+    NamedCommands.registerCommand("L4",
       arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L2Height)).andThen(
-      arm.moveToPosition(Constants.L2Rotation))
+      elevator.moveToHeight(Constants.L4Height)).andThen(
+      arm.moveToPosition(Constants.L4Rotation))
     );
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.25));
+
+    NamedCommands.registerCommand("IntakeHeight",
+      arm.moveToPosition(Constants.transitionRotation).andThen(
+      elevator.moveToHeight(Constants.intakeHeight)).andThen(
+      arm.moveToPosition(Constants.intakeRotation))
+    );
+
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.25).withTimeout(1));
+
+    NamedCommands.registerCommand("Intake", arm.intake(0.5).withTimeout(1));
 
     chooserAuto = new SendableChooser<String>();
     chooserAuto.setDefaultOption("nothing", "nothing");
@@ -156,6 +165,7 @@ public class RobotContainer {
   
     // controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    controller.square().onTrue(new InstantCommand(() -> drivebase.setGyroDegrees(Math.PI)));
     controller.share().onTrue(new InstantCommand(() -> drivebase.resetOdometry(camera.getPose())));
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
@@ -220,9 +230,12 @@ public class RobotContainer {
     //   () -> drivebase.setIsPathfinding(false)).andThen(
     //   new InstantCommand(() -> drivebase.setIsPathfinding(false)))
     // );
+    controller.L1().whileTrue(
+      new InstantCommand(() -> scheduleDriveToPose(-1))
+    );
 
     controller.R1().whileTrue(
-      new InstantCommand(() -> scheduleDriveToPose())
+      new InstantCommand(() -> scheduleDriveToPose(1))
     );
 
     // sysid
@@ -241,10 +254,10 @@ public class RobotContainer {
 
   }
 
-  public void scheduleDriveToPose() {
+  public void scheduleDriveToPose(int leftOrRight) {
     CommandScheduler.getInstance().schedule(
       new InstantCommand(() -> drivebase.setIsPathfinding(true))/* */.andThen(
-      (drivebase.driveToPose(1))).handleInterrupt(
+      (drivebase.driveToPose(leftOrRight))).handleInterrupt(
       () -> drivebase.setIsPathfinding(false)).andThen(
       new InstantCommand(() -> drivebase.setIsPathfinding(false))));
   }

@@ -100,6 +100,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private boolean isPathfinding;
     private Supplier<Pose2d> targetPose = () -> new Pose2d();
 
+    public boolean isRed;
+
 
     public SwerveSubsystem(){try
     {
@@ -190,6 +192,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     SmartDashboard.putBoolean("isPathfinding", isPathfinding);
+
+    
 
     
   }
@@ -316,7 +320,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void setGyroDegrees(double angle) {
-    swerveDrive.setGyro(new Rotation3d(0, 0, 0 - swerveDrive.getGyro().getRawRotation3d().getZ()));
+    swerveDrive.setGyro(new Rotation3d(0, 0, angle));
     // offset -= swerveDrive.getGyro().getRotation3d().getZ();
     // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offset));
     // Pose2d currentPose = getPose();
@@ -337,7 +341,7 @@ public class SwerveSubsystem extends SubsystemBase {
         alignTargetPublisher.set(targetPose.get());
         // this.commandToRunAfterFiguringOutPose = driveToPose();
         System.out.println("found targetpose");
-        // CommandScheduler.getInstance().schedule(pathFindToPose());
+        CommandScheduler.getInstance().schedule(pathFindToPose());
       }
     );
                               

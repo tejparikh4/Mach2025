@@ -68,7 +68,8 @@ public class Camera extends SubsystemBase {
         {
             
             SmartDashboard.putNumber("closestFiducial", closestFiducial);
-            // double std = 0.3 + closestFiducial * 0.4;
+
+            double std = Math.pow(closestFiducial, 2);
 
             double[] stds = NetworkTableInstance.getDefault().getTable("limelight").getEntry("stddevs").getDoubleArray(new double[6]);
             SmartDashboard.putNumber("std x", stds[6]);

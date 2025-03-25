@@ -7,7 +7,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
@@ -18,9 +21,11 @@ public class BusterAuto extends SequentialCommandGroup {
     private SendableChooser<String> chooserAuto;
 
 
-    public BusterAuto(RobotContainer robotcontainer, SendableChooser<String> chooserAuto) {
+    public BusterAuto(RobotContainer robotContainer, SendableChooser<String> chooserAuto) {
         this.robotContainer = robotContainer;
         this.chooserAuto = chooserAuto;
+        boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
+        SmartDashboard.putBoolean("isRed", isRed);
 
         
 
@@ -33,8 +38,15 @@ public class BusterAuto extends SequentialCommandGroup {
             case "1 coral":
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("1 coral");
                 
+                double angle;
+                if (isRed) {
+                    angle = 0;
+                } else {
+                    angle = 180;
+                }
+
                 addCommands(
-                    new InstantCommand(() -> robotContainer.drivebase.setGyroDegrees(180)),
+                    new InstantCommand(() -> robotContainer.drivebase.setGyroDegrees(angle)),
                     new PathPlannerAuto("1 coral auto left"));
                 break;
         }
