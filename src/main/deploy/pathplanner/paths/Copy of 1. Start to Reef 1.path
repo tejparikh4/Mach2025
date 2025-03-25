@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.705,
-        "y": 2.962249999999999
+        "x": 7.1370000000000005,
+        "y": 2.4454999999999996
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5002119889277523,
-        "y": 2.818855890912238
+        "x": 6.9076956327289185,
+        "y": 2.5450967225886907
       },
       "isLocked": false,
-      "linkedName": "reef4out"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.234733606557377,
-        "y": 0.9321721311475392
+        "x": 5.304066780821918,
+        "y": 2.928125
       },
       "prevControl": {
-        "x": 1.8646736786323843,
-        "y": 1.373260918234827
+        "x": 5.798377713929956,
+        "y": 2.6230751671808945
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "source"
+      "linkedName": "reef1outtake"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.33814432989690224,
+      "minWaypointRelativePos": 0.7738095238095237,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 0.5,
@@ -45,7 +45,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.5523809523809529,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 1.0,
@@ -56,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "parraleel elevator test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -49,7 +49,7 @@ public final class Constants {
   public static double L3Rotation = L2Rotation;
 
   public static double L4Height = 113;
-  public static double L4Rotation = 0.58;
+  public static double L4Rotation = 0.56;
 
   public static double transitionRotation = 0.61;
 

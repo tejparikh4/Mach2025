@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.359,
-        "y": 2.826
+        "x": 3.560348360655738,
+        "y": 2.6943647540983604
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.234,
-        "y": 3.04250635094611
+        "x": 3.685348360655738,
+        "y": 2.91087110504447
       },
       "isLocked": false,
-      "linkedName": "reef1"
+      "linkedName": "reef4"
     },
     {
       "anchor": {
-        "x": 5.274590163934427,
-        "y": 2.982069672131148
+        "x": 3.666267123287671,
+        "y": 2.898073630136986
       },
       "prevControl": {
-        "x": 5.407791408244717,
-        "y": 2.7513583493543314
+        "x": 3.541267123287671,
+        "y": 2.681567279190876
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef1outtake"
+      "linkedName": "reef4out"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "left 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": false
 }

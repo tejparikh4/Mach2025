@@ -96,7 +96,7 @@ public class RobotContainer {
       arm.moveToPosition(Constants.intakeRotation))
     );
 
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.25).withTimeout(1));
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.4).withTimeout(1));
 
     NamedCommands.registerCommand("Intake", arm.intake(0.5).withTimeout(1));
 
