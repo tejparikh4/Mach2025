@@ -13,6 +13,18 @@
         {
           "type": "named",
           "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2. Nudge Reef 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Outtake"
           }
         },
@@ -69,7 +81,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "reef4mudge"
+            "pathName": "5. Nudge Reef 4"
           }
         },
         {
@@ -131,7 +143,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "reef3nudge"
+            "pathName": "8. Nudge Reef 3"
           }
         },
         {
