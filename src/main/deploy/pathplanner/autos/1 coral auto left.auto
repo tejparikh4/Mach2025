@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 coral"
+            "pathName": "1. Start to Reef 1"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "reef1forward"
+            "pathName": "2. Nudge Reef 1"
           }
         },
         {
@@ -35,7 +35,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "reef1tosource"
+                  "pathName": "3. Reef 1 to Source"
                 }
               },
               {
@@ -69,7 +69,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "sourcetoreef4"
+            "pathName": "4.Source to Reef 4"
           }
         },
         {
@@ -81,7 +81,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "reef4mudge"
+            "pathName": "5. Nudge Reef 4"
           }
         },
         {
@@ -97,7 +97,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "reef4source"
+                  "pathName": "6. Reef 4 to Source"
                 }
               },
               {
@@ -131,7 +131,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "sourceto3"
+            "pathName": "7. Source to Reef 3"
           }
         },
         {
@@ -143,7 +143,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "reef3nudge"
+            "pathName": "8. Nudge Reef 3"
           }
         },
         {

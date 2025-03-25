@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.274590163934427,
-        "y": 2.982069672131148
+        "x": 3.666267123287671,
+        "y": 2.898073630136986
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.754098360655739,
-        "y": 1.8192622950819668
+        "x": 3.4614791122154234,
+        "y": 2.7546795210492245
       },
       "isLocked": false,
-      "linkedName": "reef1outtake"
+      "linkedName": "reef4out"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.9321721311475392
       },
       "prevControl": {
-        "x": 2.0379098360655736,
-        "y": 1.0880122950819668
+        "x": 1.8646736786323843,
+        "y": 1.373260918234827
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.33204845814977135,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.33814432989690224,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 0.5,
@@ -59,10 +59,10 @@
     "rotation": 55.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "left 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

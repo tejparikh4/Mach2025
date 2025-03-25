@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9792500000000002,
-        "y": 1.3339999999999999
+        "x": 1.8341204798632544,
+        "y": 1.3157761456935853
       },
       "isLocked": false,
       "linkedName": "source"
     },
     {
       "anchor": {
-        "x": 3.8415,
-        "y": 2.5429999999999997
+        "x": 3.560348360655738,
+        "y": 2.6943647540983604
       },
       "prevControl": {
-        "x": 2.6812500000000004,
-        "y": 1.7337499999999997
+        "x": 2.8171106557377046,
+        "y": 2.059016393442623
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef3"
+      "linkedName": "reef4"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "left 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 55.0

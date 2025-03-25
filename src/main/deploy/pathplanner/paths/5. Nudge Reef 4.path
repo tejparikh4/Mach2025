@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.705,
-        "y": 2.962249999999999
+        "x": 3.666267123287671,
+        "y": 2.898073630136986
       },
       "prevControl": {
-        "x": 3.58,
-        "y": 2.7457436490538893
+        "x": 3.541267123287671,
+        "y": 2.681567279190876
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "left 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 59.99999999999999
