@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.234733606557377,
-        "y": 0.9321721311475392
+        "x": 1.5224385245901637,
+        "y": 0.7283811475409834
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8341204798632544,
-        "y": 1.3157761456935853
+        "x": 1.4763580331022874,
+        "y": 0.9740976270539289
       },
       "isLocked": false,
       "linkedName": "source"
     },
     {
       "anchor": {
-        "x": 3.560348360655738,
-        "y": 2.6943647540983604
+        "x": 3.668237704918033,
+        "y": 2.934118852459016
       },
       "prevControl": {
-        "x": 2.8171106557377046,
-        "y": 2.059016393442623
+        "x": 3.502146745210552,
+        "y": 2.747266522788102
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,12 +29,44 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "L4",
+      "minWaypointRelativePos": 0.6,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Transition Rotation",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 1.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,

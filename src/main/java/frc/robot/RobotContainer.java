@@ -84,21 +84,22 @@ public class RobotContainer {
     // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
 
+    NamedCommands.registerCommand("Transition Rotation",
+      arm.moveToPosition(Constants.transitionRotation));
+
     NamedCommands.registerCommand("L4",
-      arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L4Height)).andThen(
+      elevator.moveToHeight(Constants.L4Height).andThen(
       arm.moveToPosition(Constants.L4Rotation))
     );
 
-    NamedCommands.registerCommand("IntakeHeight",
-      arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.intakeHeight)).andThen(
+    NamedCommands.registerCommand("Intake Height",
+      elevator.moveToHeight(Constants.intakeHeight).andThen(
       arm.moveToPosition(Constants.intakeRotation))
     );
 
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.25).withTimeout(1));
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.3).withTimeout(0.5));
 
-    NamedCommands.registerCommand("Intake", arm.intake(0.5).withTimeout(1));
+    NamedCommands.registerCommand("Intake", arm.intake(0.5));
 
     chooserAuto = new SendableChooser<String>();
     chooserAuto.setDefaultOption("nothing", "nothing");

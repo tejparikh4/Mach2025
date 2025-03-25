@@ -88,9 +88,11 @@ public class Arm extends SubsystemBase {
             intakeMotorTop.set(speed);
             intakeMotorBottom.set(speed);
          }
-      }).finallyDo(() -> {
+      }).until(() -> endIntake)
+      .finallyDo(() -> {
          intakeMotorTop.set(0);
          intakeMotorBottom.set(0);
+         System.out.println("color sensor intake finished");
       });
       
 

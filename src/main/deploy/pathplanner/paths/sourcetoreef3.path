@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.322540983606557,
-        "y": 2.934118852459016
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.350206922850397,
-        "y": 1.8928441388491897
-      },
-      "isLocked": false,
-      "linkedName": "reef1"
-    },
-    {
-      "anchor": {
         "x": 1.5224385245901637,
         "y": 0.7283811475409834
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.067380192876472,
+        "y": 0.9519527758916524
+      },
+      "isLocked": false,
+      "linkedName": "source"
+    },
+    {
+      "anchor": {
+        "x": 3.943954918032787,
+        "y": 2.742315573770493
+      },
       "prevControl": {
-        "x": 2.19458944527258,
-        "y": 1.8122148732721741
+        "x": 3.7571025883618727,
+        "y": 2.5762246140630123
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "source"
+      "linkedName": "reef3"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.19768722466960065,
+      "minWaypointRelativePos": 0.6,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 0.5,
@@ -47,28 +47,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "down to intake",
-      "waypointRelativePos": 0.04,
+      "name": "Transition Rotation",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Transition Rotation"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake Height"
-              }
-            }
-          ]
-        }
-      }
+      "command": null
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -81,13 +69,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }

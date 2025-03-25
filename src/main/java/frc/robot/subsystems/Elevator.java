@@ -202,7 +202,8 @@ public class Elevator extends SubsystemBase{
                 
                 return;
 
-            }).until(() -> isFinished)
+            })
+            .until(() -> isFinished)
             .finallyDo(() -> {
                 runMotors(kG);
                 System.out.println("FINISHED");

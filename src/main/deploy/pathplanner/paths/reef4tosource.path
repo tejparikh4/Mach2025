@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.705,
-        "y": 2.962249999999999
+        "x": 3.668237704918033,
+        "y": 2.934118852459016
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5002119889277523,
-        "y": 2.818855890912238
+        "x": 3.3795022307169638,
+        "y": 2.7482493137772295
       },
       "isLocked": false,
-      "linkedName": "reef4out"
+      "linkedName": "reef4"
     },
     {
       "anchor": {
-        "x": 1.234733606557377,
-        "y": 0.9321721311475392
+        "x": 1.5224385245901637,
+        "y": 0.7283811475409834
       },
       "prevControl": {
-        "x": 1.8646736786323843,
-        "y": 1.373260918234827
+        "x": 2.1086400261583513,
+        "y": 1.2290137645002783
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,35 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "down to intake",
+      "waypointRelativePos": 0.04,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Transition Rotation"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake Height"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 1.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
