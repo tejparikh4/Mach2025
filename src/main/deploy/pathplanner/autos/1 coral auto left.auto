@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "2. Nudge Reef 1"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Outtake"
@@ -138,12 +132,6 @@
           "type": "named",
           "data": {
             "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "8. Nudge Reef 3"
           }
         },
         {
