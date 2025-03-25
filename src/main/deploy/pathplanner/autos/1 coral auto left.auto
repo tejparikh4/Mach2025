@@ -13,18 +13,6 @@
         {
           "type": "named",
           "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "reef1forward"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Outtake"
           }
         },
@@ -75,18 +63,6 @@
         {
           "type": "named",
           "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "reef4mudge"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Outtake"
           }
         },
@@ -132,18 +108,6 @@
           "type": "path",
           "data": {
             "pathName": "sourceto3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "reef3nudge"
           }
         },
         {

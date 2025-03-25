@@ -8,30 +8,51 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.887289794531107,
-        "y": 2.43346616085021
+        "x": 6.91149553542407,
+        "y": 2.553424679551634
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.359,
-        "y": 2.826
+        "x": 5.274590163934427,
+        "y": 2.982069672131148
       },
       "prevControl": {
-        "x": 5.886459016393443,
-        "y": 2.5742581967213116
+        "x": 5.790507443551363,
+        "y": 2.5967429019549737
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef1"
+      "linkedName": "reef1outtake"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.863376623376628,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.8342857142857039,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 1.0,

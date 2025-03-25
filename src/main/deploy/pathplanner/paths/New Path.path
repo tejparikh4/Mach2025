@@ -8,28 +8,42 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.198776014072916,
-        "y": 1.5124064204774719
+        "x": 2.0167910591034826,
+        "y": 1.5111594914486024
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.8840163934408936,
-        "y": 2.5025614754095535
+        "x": 3.9877499999999997,
+        "y": 2.8354999999999997
       },
       "prevControl": {
-        "x": 3.550642013062389,
-        "y": 2.292473559886463
+        "x": 3.7644954635638608,
+        "y": 2.649868234860981
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "reef3Outtake"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.82285714285714,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
