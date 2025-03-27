@@ -109,6 +109,8 @@ public class RobotContainer {
     chooserAuto.setDefaultOption("nothing", "nothing");
     chooserAuto.addOption("leave", "leave");
     chooserAuto.addOption("1 coral (IMPOSSIBLE)", "1 coral");
+    chooserAuto.addOption("1 left (IMPOSSIBLE)", "left");
+
     SmartDashboard.putData(chooserAuto);
     
 
@@ -170,8 +172,11 @@ public class RobotContainer {
   
     // controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    controller.square().onTrue(new InstantCommand(() -> drivebase.setGyroDegrees(Math.PI)));
+    controller.square().onTrue(new InstantCommand(() -> drivebase.setGyroRadians(Math.PI)));
     controller.share().onTrue(new InstantCommand(() -> drivebase.resetOdometry(camera.getPose())));
+
+    controller.R3().whileTrue(driveFieldOrientedAngularVelocitySlow);
+
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
     //controller.L2().whileTrue(arm.moveToPosition(0.28));

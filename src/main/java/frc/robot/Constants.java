@@ -19,7 +19,7 @@ import java.util.Arrays;
  */
 public final class Constants {
 
-  public static final float maxSpeed = 2f;
+  public static final float maxSpeed = 4f;
   public static final int armId = 17;
 
   public static final int elevatorLeftId = 13; //not the right one yet
@@ -57,7 +57,7 @@ public final class Constants {
 
   public static double pivotSpeed = 0.45;
 
-  public static double colorSumThreshold = 350;
+  public static double colorSumThreshold = 900;
 
   public static double closestFiducialIgnoreThreshold = 4;
 

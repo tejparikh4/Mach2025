@@ -316,10 +316,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void zeroGyro() {
     swerveDrive.zeroGyro();
-    // setGyroDegrees(0);
+    // setGyroRadians(0);
   }
 
-  public void setGyroDegrees(double angle) {
+  public void setGyroRadians(double angle) {
     swerveDrive.setGyro(new Rotation3d(0, 0, angle));
     // offset -= swerveDrive.getGyro().getRotation3d().getZ();
     // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offset));
