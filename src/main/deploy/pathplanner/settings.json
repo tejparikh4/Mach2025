@@ -3,13 +3,14 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "parraleel elevator test",
-    "left 3 coral auto"
+    "New Folder",
+    "left 3 coral auto",
+    "parraleel elevator test"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 3.0,
-  "defaultMaxAngVel": 360.0,
+  "defaultMaxAngVel": 720.0,
   "defaultMaxAngAccel": 360.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 66.0,

@@ -47,7 +47,7 @@ public class BusterAuto extends SequentialCommandGroup {
 
                 addCommands(
                     new InstantCommand(() -> robotContainer.drivebase.setGyroDegrees(angle)),
-                    new PathPlannerAuto("1 coral auto left"));
+                    new PathPlannerAuto("3 coral auto right"));
                 break;
         }
     }

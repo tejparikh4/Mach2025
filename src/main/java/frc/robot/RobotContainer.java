@@ -189,8 +189,7 @@ public class RobotContainer {
     controller2.x().whileTrue(arm.intake(0.5));
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L4Height)).andThen(
-      arm.moveToPosition(Constants.L4Rotation))
+      elevator.moveToHeight(Constants.L4Height))
     );
     controller2.pov(270).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
