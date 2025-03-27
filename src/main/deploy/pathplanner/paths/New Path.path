@@ -3,41 +3,54 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2298818897637795,
-        "y": 0.9848425196850406
+        "x": 3.6620078740157482,
+        "y": 5.144330708661417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6814732568654174,
-        "y": 1.4814906501078078
+        "x": 3.443276297023085,
+        "y": 5.458141586151964
       },
       "isLocked": false,
-      "linkedName": "source"
+      "linkedName": "right reef4"
     },
     {
       "anchor": {
-        "x": 3.666267123287671,
-        "y": 2.898073630136986
+        "x": 1.4233464566929135,
+        "y": 7.203346456692913
       },
       "prevControl": {
-        "x": 3.646484426672933,
-        "y": 2.6488575694293153
+        "x": 1.6955272426871721,
+        "y": 6.9838376612944755
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef4out"
+      "linkedName": "right source"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8261904761904761,
+      "minWaypointRelativePos": 0.6772823779193206,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 0.5,
-        "maxAngularVelocity": 360.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.2632696390658174,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 360.0,
         "nominalVoltage": 12.0,
         "unlimited": false
@@ -56,13 +69,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -55.0
   },
   "reversed": false,
-  "folder": "parraleel elevator test",
+  "folder": "New Folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

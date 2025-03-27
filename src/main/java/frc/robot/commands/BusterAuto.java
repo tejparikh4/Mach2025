@@ -19,6 +19,7 @@ public class BusterAuto extends SequentialCommandGroup {
 
     private RobotContainer robotContainer;
     private SendableChooser<String> chooserAuto;
+    private double angle;
 
 
     public BusterAuto(RobotContainer robotContainer, SendableChooser<String> chooserAuto) {
@@ -35,19 +36,28 @@ public class BusterAuto extends SequentialCommandGroup {
             case "leave":
                 addCommands(new PathPlannerAuto("straightauto"));
                 break;
-            case "1 coral":
+            case "3 coral right":
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("1 coral");
                 
-                double angle;
                 if (isRed) {
                     angle = 0;
                 } else {
-                    angle = 180;
+                    angle = Math.PI;
                 }
 
                 addCommands(
-                    new InstantCommand(() -> robotContainer.drivebase.setGyroDegrees(angle)),
-                    new PathPlannerAuto("1 coral auto left"));
+                    new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
+                    new PathPlannerAuto("3 coral auto right"));
+                break;
+            case "3 coral left":
+                if (isRed) {
+                    angle = 0;
+                } else {
+                    angle = Math.PI;
+                }
+                addCommands(
+                    new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
+                    new PathPlannerAuto("3 coral auto left"));
                 break;
         }
     }

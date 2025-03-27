@@ -89,6 +89,9 @@ public class RobotContainer {
       elevator.moveToHeight(Constants.L4Height)).andThen(
       arm.moveToPosition(Constants.L4Rotation))
     );
+    NamedCommands.registerCommand("Transition rotation",
+    arm.moveToPosition(Constants.transitionRotation));
+  
 
     NamedCommands.registerCommand("IntakeHeight",
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -96,14 +99,16 @@ public class RobotContainer {
       arm.moveToPosition(Constants.intakeRotation))
     );
 
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.4).withTimeout(1));
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.7).withTimeout(.5));
 
-    NamedCommands.registerCommand("Intake", arm.intake(0.5).withTimeout(1));
+    NamedCommands.registerCommand("Intake", arm.intake(0.5));
 
     chooserAuto = new SendableChooser<String>();
     chooserAuto.setDefaultOption("nothing", "nothing");
     chooserAuto.addOption("leave", "leave");
-    chooserAuto.addOption("1 coral (IMPOSSIBLE)", "1 coral");
+    chooserAuto.addOption("3 coral left", "left");
+    chooserAuto.addOption("3 coral right", "right");
+
     SmartDashboard.putData(chooserAuto);
     
 
@@ -165,14 +170,16 @@ public class RobotContainer {
   
     // controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
     controller.options().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    controller.square().onTrue(new InstantCommand(() -> drivebase.setGyroDegrees(Math.PI)));
-    controller.L2().onFalse(drivebase.interruptCommand());
+    controller.square().onTrue(new InstantCommand(() -> drivebase.setGyroRadians(Math.PI)));
+
     controller.share().onTrue(new InstantCommand(() -> drivebase.resetOdometry(camera.getPose())));
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
 
     controller.R2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(1, .53)));
     controller.L2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(-1, .53)));
+
+    controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
 
     //controller.L2().whileTrue(arm.moveToPosition(0.28));
     controller2.rightBumper().whileTrue(arm.rotate(-0.25));
@@ -192,8 +199,7 @@ public class RobotContainer {
     controller2.x().whileTrue(arm.intake(0.5));
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L4Height)).andThen(
-      arm.moveToPosition(Constants.L4Rotation))
+      elevator.moveToHeight(Constants.L4Height))
     );
     controller2.pov(270).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -233,13 +239,7 @@ public class RobotContainer {
     //   () -> drivebase.setIsPathfinding(false)).andThen(
     //   new InstantCommand(() -> drivebase.setIsPathfinding(false)))
     // );
-    controller.L1().whileTrue(
-      new InstantCommand(() -> scheduleDriveToPose(-1, Apriltags.outOffset))
-    );
-
-    controller.R1().whileTrue(
-      new InstantCommand(() -> scheduleDriveToPose(1, Apriltags.outOffset))
-    );
+    
 
     // sysid
 
