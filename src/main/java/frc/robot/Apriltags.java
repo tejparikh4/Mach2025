@@ -11,8 +11,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Apriltags {
 
-    public static double outOffset = 0.7;
-    public static double leftRightOffset = 0.25;
+    public static double outOffset = 0.65;
+    public static double leftRightOffset = 0.18;
 
     public static Map<Integer, Pose2d> aprilTagMap = new HashMap<>();
 
@@ -61,7 +61,7 @@ public class Apriltags {
         
     }
 
-    public static Pose2d getTargetLocation(Pose2d tagPose, int leftOrRight) {
+    public static Pose2d getTargetLocation(Pose2d tagPose, int leftOrRight, double outOffset) {
         double x = tagPose.getX() + Math.cos(tagPose.getRotation().getRadians()) * outOffset - leftOrRight * Math.sin(tagPose.getRotation().getRadians()) * leftRightOffset;
         double y = tagPose.getY() + Math.sin(tagPose.getRotation().getRadians()) * outOffset + leftOrRight * Math.cos(tagPose.getRotation().getRadians()) * leftRightOffset;
         return new Pose2d(x, y, Rotation2d.fromDegrees(tagPose.getRotation().getDegrees() + 180));

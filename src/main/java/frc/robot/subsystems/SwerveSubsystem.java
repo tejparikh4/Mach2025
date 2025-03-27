@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Apriltags;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
@@ -73,7 +75,8 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
    * Swerve drive object."
    */
-  
+    RobotContainer robotContainer;
+
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve_kraken");
     private final SwerveDrive swerveDrive;
 
@@ -103,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public boolean isRed;
 
 
-    public SwerveSubsystem(){try
+    public SwerveSubsystem(RobotContainer robotContainer){try
     {
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
@@ -122,6 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
       throw new RuntimeException(e);
     }
 
+    this.robotContainer = robotContainer;
     // gyro = (PigeonIMU) swerveDrive.getGyro().getIMU();
 
     setupPathPlanner();
@@ -332,16 +336,16 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setAutoCenteringModules(false);
   }
 
-  public Command driveToPose(int side) {
+  public Command driveToPose(int side, double outOffset) {
     return new InstantCommand(() -> {
         System.out.println("drive to pose run");
         Pose2d nearestTag = getPose().nearest(Apriltags.tagLocations);
         aprilTagPublisher.set(nearestTag);
-        targetPose = () -> Apriltags.getTargetLocation(nearestTag, side);
+        targetPose = () -> Apriltags.getTargetLocation(nearestTag, side, outOffset);
         alignTargetPublisher.set(targetPose.get());
         // this.commandToRunAfterFiguringOutPose = driveToPose();
         System.out.println("found targetpose");
-        CommandScheduler.getInstance().schedule(pathFindToPose());
+        CommandScheduler.getInstance().schedule(pathFindToPose().until(() -> !(robotContainer.controller.L2().getAsBoolean() || robotContainer.controller.R2().getAsBoolean() || robotContainer.controller.L1().getAsBoolean() || robotContainer.controller.R1().getAsBoolean())));
       }
     );
                               
@@ -370,5 +374,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void setIsPathfinding(boolean isPathfinding) {
     this.isPathfinding = isPathfinding;
+  }
+
+  public Command interruptCommand() {
+    return new StartEndCommand(() -> System.out.println("started interrupt"), () -> System.out.println("ended interrupt"));
   }
 }
