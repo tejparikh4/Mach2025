@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase {
    private double startTime;
    private static double kMaxVelocity = (32* Math.PI);
    private static double kMaxAcceleration = (16 * Math.PI);
-   boolean endIntake = false;
+   public boolean endIntake = false;
 
    private TCS34725ColorSensor colorSensor;
    private TCSColor color;

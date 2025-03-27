@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "1. Start to Reef 1"
+            "name": "Transition rotation"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "L4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of 1. Start to Reef 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
@@ -61,21 +74,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "4. Source to Reef 4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5. Nudge Reef 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of 4.Source to Reef 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
@@ -123,15 +137,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "7. Source to Reef 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of 7. Source to Reef 3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {

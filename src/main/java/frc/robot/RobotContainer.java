@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -89,6 +91,9 @@ public class RobotContainer {
       elevator.moveToHeight(Constants.L4Height)).andThen(
       arm.moveToPosition(Constants.L4Rotation))
     );
+    NamedCommands.registerCommand("Transition rotation",
+    arm.moveToPosition(Constants.transitionRotation));
+  
 
     NamedCommands.registerCommand("IntakeHeight",
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -96,9 +101,9 @@ public class RobotContainer {
       arm.moveToPosition(Constants.intakeRotation))
     );
 
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.4).withTimeout(1));
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.7).withTimeout(.5));
 
-    NamedCommands.registerCommand("Intake", arm.intake(0.5).withTimeout(1));
+    NamedCommands.registerCommand("Intake", arm.intake(0.5));
 
     chooserAuto = new SendableChooser<String>();
     chooserAuto.setDefaultOption("nothing", "nothing");
