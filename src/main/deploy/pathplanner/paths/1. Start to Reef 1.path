@@ -10,8 +10,6 @@
       "nextControl": {
         "x": 6.887002211557284,
         "y": 2.4465515577735415
-        "x": 6.887002211557284,
-        "y": 2.4465515577735415
       },
       "isLocked": false,
       "linkedName": null
@@ -28,19 +26,13 @@
       "nextControl": null,
       "isLocked": false,
       "linkedName": "reef1"
-      "linkedName": "reef1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
-  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 720.0,
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
@@ -53,7 +45,7 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "left 3 coral auto",
+  "folder": "right 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.320275590551181,
+        "x": 5.32,
         "y": 5.158149606299212
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.5141968503937004,
+        "x": 5.51392125984252,
         "y": 5.6970866141732275
       },
       "isLocked": false,
-      "linkedName": "right reef1"
+      "linkedName": "real left start"
     },
     {
       "anchor": {
@@ -72,7 +72,7 @@
     "rotation": -55.0
   },
   "reversed": false,
-  "folder": "right 3 coral auto",
+  "folder": "left 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.99999999999999

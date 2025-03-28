@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.322540983606557,
-        "y": 2.9221311475409846
+        "x": 5.891,
+        "y": 4.145
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.197540983606557,
-        "y": 3.1386374984870944
+        "x": 6.140999999999999,
+        "y": 4.145
       },
       "isLocked": false,
-      "linkedName": "reef1"
+      "linkedName": "mid"
     },
     {
       "anchor": {
-        "x": 5.306456692913385,
-        "y": 2.919488188976378
+        "x": 6.36547131147541,
+        "y": 4.132889344262295
       },
       "prevControl": {
-        "x": 5.439657937223675,
-        "y": 2.6887768661995612
+        "x": 6.11547131147541,
+        "y": 4.132889344262295
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef1outtake"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 1.0,
-    "maxAngularVelocity": 360.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -179.1574757392596
   },
   "reversed": false,
-  "folder": "right 3 coral auto",
+  "folder": "middle",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }

@@ -36,24 +36,24 @@ public final class Constants {
   public static int intakeMotorTopId=15;
   public static int intakeMotorBottomId=16;
 
-  public static double intakeHeight = 0;
-  public static double intakeRotation = 0.52;
+  public static double intakeHeight = 1;
+  public static double intakeRotation = 0.02;
 
   public static double L1Height = 0.5;
-  public static double L1Rotation = 0.59;
+  public static double L1Rotation = 0.07;
 
   public static double L2Height = 26;
-  public static double L2Rotation = 0.59;
+  public static double L2Rotation = 0.108;
 
-  public static double L3Height = 57;
+  public static double L3Height = 58;
   public static double L3Rotation = L2Rotation;
 
-  public static double outakeRotation = 0.63; 
+  public static double outakeRotation = 0.05; 
 
-  public static double L4Height = 114;
-  public static double L4Rotation = 0.55;
+  public static double L4Height = 112;
+  public static double L4Rotation = 0.05;
 
-  public static double transitionRotation = 0.61;
+  public static double transitionRotation = 0.1;
 
   public static double pivotSpeed = 0.45;
 
