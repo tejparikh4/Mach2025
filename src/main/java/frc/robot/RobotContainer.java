@@ -40,8 +40,8 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
 
   // private final Joystick controller = new Joystick(Constants.kDriverControllerPort);
-  private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
-  private final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
+  public final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
+  public final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -64,7 +64,7 @@ public class RobotContainer {
   /* Subsystems */
 
   // The robot's subsystems and commands are defined here...
-  public final SwerveSubsystem drivebase = new SwerveSubsystem();
+  public final SwerveSubsystem drivebase = new SwerveSubsystem(this);
   public final Arm arm = new Arm();
   public final Elevator elevator = new Elevator();
   public final Camera camera = new Camera(drivebase);
@@ -185,8 +185,8 @@ public class RobotContainer {
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
 
-    controller.R2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(1, .53)));
-    controller.L2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(-1, .53)));
+    controller.R2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(1)));
+    controller.L2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(-1)));
 
     controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
 
@@ -206,7 +206,6 @@ public class RobotContainer {
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.L4Height))
-      elevator.moveToHeight(Constants.L4Height))
     );
     controller2.pov(270).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -217,18 +216,14 @@ public class RobotContainer {
       arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.L2Height)).andThen(
       arm.moveToPosition(Constants.L2Rotation))
-      );
-    controller2.pov(180).whileTrue(
-      arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L1Height)).andThen(
-      arm.moveToPosition(Constants.L1Rotation))
     );
-    
-    controller2.b().whileTrue(
+    controller2.pov(180).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.intakeHeight)).andThen(
       arm.moveToPosition(Constants.intakeRotation))
     );
+     
+    
 
 
     // controller.cross().whileTrue(
@@ -270,11 +265,7 @@ public class RobotContainer {
   }
 
   public void scheduleDriveToPose(int leftOrRight) {
-    CommandScheduler.getInstance().schedule(
-      new InstantCommand(() -> drivebase.setIsPathfinding(true))/* */.andThen(
-      (drivebase.driveToPose(leftOrRight))).handleInterrupt(
-      () -> drivebase.setIsPathfinding(false)).andThen(
-      new InstantCommand(() -> drivebase.setIsPathfinding(false))));
+    CommandScheduler.getInstance().schedule((drivebase.driveToPose(leftOrRight)));
   }
 
   public void teleopInit() {

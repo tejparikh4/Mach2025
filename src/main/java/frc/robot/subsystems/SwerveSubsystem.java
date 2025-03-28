@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Apriltags;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
@@ -77,6 +78,8 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
    * Swerve drive object."
    */
+
+    RobotContainer robotContainer;
   
     File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve_kraken");
     private final SwerveDrive swerveDrive;
@@ -107,7 +110,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public boolean isRed;
 
 
-    public SwerveSubsystem(){try
+    public SwerveSubsystem(RobotContainer robotContainer){try
     {
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
@@ -343,9 +346,9 @@ public class SwerveSubsystem extends SubsystemBase {
         aprilTagPublisher.set(nearestTag);
         targetPose = () -> Apriltags.getTargetLocation(nearestTag, side);
         alignTargetPublisher.set(targetPose.get());
-        // this.commandToRunAfterFiguringOutPose = driveToPose();
+
         System.out.println("found targetpose");
-        CommandScheduler.getInstance().schedule(pathFindToPose());
+        CommandScheduler.getInstance().schedule(pathFindToPose().until(() -> !(robotContainer.controller.L2().getAsBoolean() || robotContainer.controller.R2().getAsBoolean())));
       }
     );
                               
