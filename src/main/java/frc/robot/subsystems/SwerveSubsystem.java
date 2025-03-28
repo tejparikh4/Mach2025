@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -29,8 +30,11 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
 // Line 21 and 22 are not part of the library anymore
 // import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 // import com.pathplanner.lib.util.ReplanningConfig;
@@ -277,9 +281,9 @@ public class SwerveSubsystem extends SubsystemBase {
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(3.0, 0.0, 0.0),
+              new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(3.0, 0.0, 0.0)
+              new PIDConstants(5.0, 0.0, 0.0)
               // Rotation PID constants
           ),
           config,
@@ -352,13 +356,25 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command pathFindToPose() {
-    PathConstraints constraints = new PathConstraints(1, 1, 1, 1);
+    PathConstraints constraints = new PathConstraints(3, 1.5, 1, 1);
+
+    // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(getPose(), targetPose.get());
+
+    // PathPlannerPath path = new PathPlannerPath(
+    //   waypoints,
+    //   constraints,
+    //   null,
+    //   new GoalEndState(0, targetPose.get().getRotation())
+    // );
+
+    // return AutoBuilder.followPath(path);
 
     return AutoBuilder.pathfindToPose(
       targetPose.get(),
       constraints,
       0
     );
+
   }
 
   // private Command commandToRunAfterFiguringOutPose = new InstantCommand(() -> {});

@@ -36,7 +36,7 @@ public class BusterAuto extends SequentialCommandGroup {
             case "leave":
                 addCommands(new PathPlannerAuto("straightauto"));
                 break;
-            case "3 coral right":
+            case "right":
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("1 coral");
                 
                 if (isRed) {
@@ -47,9 +47,9 @@ public class BusterAuto extends SequentialCommandGroup {
 
                 addCommands(
                     new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
-                    new PathPlannerAuto("3 coral auto right"));
+                    new PathPlannerAuto("3 coral auto left", true));
                 break;
-            case "3 coral left":
+            case "left":
                 if (isRed) {
                     angle = 0;
                 } else {
