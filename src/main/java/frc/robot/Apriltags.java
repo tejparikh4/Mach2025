@@ -62,6 +62,7 @@ public class Apriltags {
     }
 
     public static Pose2d getTargetLocation(Pose2d tagPose, int leftOrRight) {
+    public static Pose2d getTargetLocation(Pose2d tagPose, int leftOrRight) {
         double x = tagPose.getX() + Math.cos(tagPose.getRotation().getRadians()) * outOffset - leftOrRight * Math.sin(tagPose.getRotation().getRadians()) * leftRightOffset;
         double y = tagPose.getY() + Math.sin(tagPose.getRotation().getRadians()) * outOffset + leftOrRight * Math.cos(tagPose.getRotation().getRadians()) * leftRightOffset;
         return new Pose2d(x, y, Rotation2d.fromDegrees(tagPose.getRotation().getDegrees() + 180));
