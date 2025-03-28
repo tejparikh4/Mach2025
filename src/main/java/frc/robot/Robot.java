@@ -6,7 +6,6 @@ package frc.robot;
 
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.revrobotics.sim.SparkMaxSim;
 import swervelib.simulation.SwerveModuleSimulation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -35,7 +34,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    PathfindingCommand.warmupCommand().schedule();
   }
 
   /**
