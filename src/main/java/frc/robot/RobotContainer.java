@@ -42,8 +42,8 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
 
   // private final Joystick controller = new Joystick(Constants.kDriverControllerPort);
-  private final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
-  private final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
+  public final CommandPS4Controller controller = new CommandPS4Controller(Constants.kDriverControllerPort);
+  public final CommandXboxController controller2 = new CommandXboxController(Constants.kSecondaryControllerPort);
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -66,7 +66,7 @@ public class RobotContainer {
   /* Subsystems */
 
   // The robot's subsystems and commands are defined here...
-  public final SwerveSubsystem drivebase = new SwerveSubsystem();
+  public final SwerveSubsystem drivebase = new SwerveSubsystem(this);
   public final Arm arm = new Arm();
   public final Elevator elevator = new Elevator();
   public final Camera camera = new Camera(drivebase);
@@ -95,9 +95,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Transition rotation",
     arm.moveToPosition(Constants.transitionRotation));
   
-    NamedCommands.registerCommand("Transition rotation",
-    arm.moveToPosition(Constants.transitionRotation));
-  
 
     NamedCommands.registerCommand("IntakeHeight",
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -106,9 +103,7 @@ public class RobotContainer {
     );
 
     NamedCommands.registerCommand("Outtake", arm.outtake(0.7).withTimeout(.5));
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.7).withTimeout(.5));
 
-    NamedCommands.registerCommand("Intake", arm.intake(0.5));
     NamedCommands.registerCommand("Intake", arm.intake(0.5));
 
     chooserAuto = new SendableChooser<String>();
@@ -140,7 +135,7 @@ public class RobotContainer {
 
 
   SwerveInputStream driveAngularVelocitySlow = driveAngularVelocity.copy()
-                                                .scaleTranslation(0.2);
+                                                .scaleTranslation(0.4);
 
   Command driveFieldOrientedAngularVelocitySlow = drivebase.driveFieldOriented(driveAngularVelocitySlow);
 
@@ -182,10 +177,6 @@ public class RobotContainer {
 
     controller.share().onTrue(new InstantCommand(() -> drivebase.resetOdometry(camera.getPose())));
 
-    controller.R3().whileTrue(driveFieldOrientedAngularVelocitySlow);
-
-
-    controller.R3().whileTrue(driveFieldOrientedAngularVelocitySlow);
 
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
@@ -199,7 +190,6 @@ public class RobotContainer {
     controller2.rightBumper().whileTrue(arm.rotate(-0.25));
 
     controller2.rightTrigger().whileTrue(arm.outtake(1));
-    controller2.rightTrigger().whileTrue(arm.outtake(1));
 
 
     // controller.cross().whileTrue(elevator.setSpeed(-1));
@@ -211,7 +201,6 @@ public class RobotContainer {
     controller2.x().whileTrue(arm.intake(0.5));
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L4Height))
       elevator.moveToHeight(Constants.L4Height))
     );
     controller2.pov(270).whileTrue(

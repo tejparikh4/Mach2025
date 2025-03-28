@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Apriltags;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
@@ -109,7 +110,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public boolean isRed;
 
 
-    public SwerveSubsystem(){try
+    public SwerveSubsystem(RobotContainer robotContainer){try
     {
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
@@ -120,6 +121,8 @@ public class SwerveSubsystem extends SubsystemBase {
       // } else {
       //   swerveDrive.getSwerveController().addSlewRateLimiters(null, null, null);
       // }
+
+      this.robotContainer = robotContainer;
 
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
@@ -327,7 +330,6 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void setGyroRadians(double angle) {
-  public void setGyroRadians(double angle) {
     swerveDrive.setGyro(new Rotation3d(0, 0, angle));
     // offset -= swerveDrive.getGyro().getRotation3d().getZ();
     // swerveDrive.getGyro().setOffset(new Rotation3d(0, 0, offset));
@@ -341,12 +343,10 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command driveToPose(int side) {
-  public Command driveToPose(int side) {
     return new InstantCommand(() -> {
         System.out.println("drive to pose run");
         Pose2d nearestTag = getPose().nearest(Apriltags.tagLocations);
         aprilTagPublisher.set(nearestTag);
-        targetPose = () -> Apriltags.getTargetLocation(nearestTag, side);
         targetPose = () -> Apriltags.getTargetLocation(nearestTag, side);
         alignTargetPublisher.set(targetPose.get());
 

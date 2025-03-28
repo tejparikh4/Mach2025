@@ -20,7 +20,6 @@ public class BusterAuto extends SequentialCommandGroup {
     private RobotContainer robotContainer;
     private SendableChooser<String> chooserAuto;
     private double angle;
-    private double angle;
 
 
     public BusterAuto(RobotContainer robotContainer, SendableChooser<String> chooserAuto) {
@@ -43,7 +42,6 @@ public class BusterAuto extends SequentialCommandGroup {
                 if (isRed) {
                     angle = 0;
                 } else {
-                    angle = Math.PI;
                     angle = Math.PI;
                 }
 
