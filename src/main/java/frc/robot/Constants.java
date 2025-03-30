@@ -36,7 +36,7 @@ public final class Constants {
   public static int intakeMotorTopId=15;
   public static int intakeMotorBottomId=16;
 
-  public static double intakeHeight = 1;
+  public static double intakeHeight = 0;
   public static double intakeRotation = 0.02;
 
   public static double L1Height = 0.5;
@@ -57,7 +57,7 @@ public final class Constants {
 
   public static double pivotSpeed = 0.45;
 
-  public static double colorSumThreshold = 900;
+  public static double colorSumThreshold = 600;
 
   public static double closestFiducialIgnoreThreshold = 4;
 
