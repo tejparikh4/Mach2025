@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Apriltags {
 
-    public static double outOffset = 0.65;
+    public static double outOffset = 0.6;
     public static double leftRightOffset = 0.18;
 
     public static Map<Integer, Pose2d> aprilTagMap = new HashMap<>();

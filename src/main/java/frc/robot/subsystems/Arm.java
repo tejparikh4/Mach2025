@@ -133,7 +133,7 @@ public class Arm extends SubsystemBase {
          }
          double error = encoderPosition - angle;
          SmartDashboard.putNumber("arm error", error);
-         if(Math.abs(error) > 0.01){
+         if(Math.abs(error) > 0.003){
             if(error < 0) {
                pivotMotor.set(Constants.pivotSpeed);
             } else {
