@@ -195,7 +195,7 @@ public class RobotContainer {
     controller2.leftBumper().whileTrue(arm.rotate(0.25));
     controller2.rightBumper().whileTrue(arm.rotate(-0.25));
 
-    controller2.rightTrigger().whileTrue(arm.outtake(.5));
+    controller2.rightTrigger().whileTrue(arm.outtake(1));
 
     controller2.leftTrigger().whileTrue(arm.outtake(-0.25));
 
@@ -206,7 +206,7 @@ public class RobotContainer {
 
     controller2.y().whileTrue(elevator.setSpeed(2.5));
     controller2.a().whileTrue(elevator.setSpeed(-2));
-    controller2.x().whileTrue(arm.intake(0.8));
+    controller2.x().whileTrue(arm.intake(0.6));
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.L4Height)).andThen(
