@@ -34,7 +34,13 @@ public class BusterAuto extends SequentialCommandGroup {
             case "nothing":
                 break;
             case "leave":
+                if (isRed) {
+                    angle = 0;
+                } else {
+                    angle = Math.PI;
+                }
                 addCommands(new PathPlannerAuto("straightauto"));
+                // addCommands(new InstantCommand());
                 break;
             case "right":
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("1 coral");
@@ -47,7 +53,8 @@ public class BusterAuto extends SequentialCommandGroup {
 
                 addCommands(
                     new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
-                    new PathPlannerAuto("3 coral auto left", true));
+                    new PathPlannerAuto("3 coral auto left", true)
+                );
                 break;
             case "left":
                 if (isRed) {
@@ -57,7 +64,30 @@ public class BusterAuto extends SequentialCommandGroup {
                 }
                 addCommands(
                     new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
-                    new PathPlannerAuto("3 coral auto left"));
+                    new PathPlannerAuto("3 coral auto left")
+                );
+                break;
+            case "midleft":
+                if (isRed) {
+                    angle = 0;
+                } else {
+                    angle = Math.PI;
+                }
+                addCommands(
+                    new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
+                    new PathPlannerAuto("1 coral middle left")
+                );
+                break;
+            case "midright":
+                if (isRed) {
+                    angle = 0;
+                } else {
+                    angle = Math.PI;
+                }
+                addCommands(
+                    new InstantCommand(() -> robotContainer.drivebase.setGyroRadians(angle)),
+                    new PathPlannerAuto("1 coral middle left", true)
+                );
                 break;
         }
     }

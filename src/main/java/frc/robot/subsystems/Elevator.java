@@ -150,7 +150,7 @@ public class Elevator extends SubsystemBase{
                 startPos = getAverageEncoderPosition();
                 isFinished = false;
             },()->{
-                if(Arm.pivotEncoder.get() < 0.6){return;}
+                if(Arm.pivotEncoder.get() < 0.08){return;}
 
 
                 // trapezoidal motion profile

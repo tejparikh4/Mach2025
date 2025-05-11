@@ -358,7 +358,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command pathFindToPose() {
-    PathConstraints constraints = new PathConstraints(3, 1.5, 1, 1);
+    PathConstraints constraints = new PathConstraints(4, 2, 1, 1);
 
     // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(getPose(), targetPose.get());
 

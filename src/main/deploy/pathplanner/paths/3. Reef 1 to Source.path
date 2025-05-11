@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.306456692913385,
-        "y": 2.919488188976378
+        "x": 5.3704918032786875,
+        "y": 2.958094262295083
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.785964889634697,
-        "y": 1.7566808119271966
+        "x": 5.85,
+        "y": 1.7952868852459016
       },
       "isLocked": false,
       "linkedName": "reef1outtake"
@@ -72,7 +72,7 @@
     "rotation": 55.0
   },
   "reversed": false,
-  "folder": "left 3 coral auto",
+  "folder": "right 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 119.99999999999999

@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 2.6812500000000004,
-        "y": 1.7337499999999997
+        "y": 1.73375
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": "left 3 coral auto",
+  "folder": "right 3 coral auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 55.0

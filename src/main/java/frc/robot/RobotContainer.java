@@ -85,15 +85,24 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    // elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
+    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runMotors(elevator.getkG()), elevator));
     // arm.setDefaultCommand(arm.outtake(0));
 
     NamedCommands.registerCommand("L4",
       arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L4Height))
+      elevator.moveToHeight(Constants.L4Height)).andThen(
+        arm.moveToPosition(Constants.L4Rotation)
+      )
+    );
+    NamedCommands.registerCommand("L3",
+      arm.moveToPosition(Constants.transitionRotation).andThen(
+      elevator.moveToHeight(Constants.L3Height)).andThen(
+        arm.moveToPosition(Constants.L3Rotation)
+      )
     );
     NamedCommands.registerCommand("Transition rotation",
-    arm.moveToPosition(Constants.transitionRotation));
+      arm.moveToPosition(Constants.transitionRotation)
+    );
   
 
     NamedCommands.registerCommand("IntakeHeight",
@@ -102,7 +111,7 @@ public class RobotContainer {
       arm.moveToPosition(Constants.intakeRotation))
     );
 
-    NamedCommands.registerCommand("Outtake", arm.outtake(0.7).withTimeout(.5));
+    NamedCommands.registerCommand("Outtake", arm.outtake(0.7).withTimeout(1));
 
     NamedCommands.registerCommand("Intake", arm.intake(0.5));
 
@@ -111,6 +120,9 @@ public class RobotContainer {
     chooserAuto.addOption("leave", "leave");
     chooserAuto.addOption("3 coral left", "left");
     chooserAuto.addOption("3 coral right", "right");
+    chooserAuto.addOption("1 coral left", "midleft");
+    chooserAuto.addOption("1 coral right", "midright");
+
 
     SmartDashboard.putData(chooserAuto);
     
@@ -179,7 +191,6 @@ public class RobotContainer {
 
 
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
-    controller2.leftBumper().whileTrue(arm.rotate(0.25));
 
     controller.R2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(1)));
     controller.L2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(-1)));
@@ -187,21 +198,25 @@ public class RobotContainer {
     controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
 
     //controller.L2().whileTrue(arm.moveToPosition(0.28));
+    controller2.leftBumper().whileTrue(arm.rotate(0.25));
     controller2.rightBumper().whileTrue(arm.rotate(-0.25));
 
     controller2.rightTrigger().whileTrue(arm.outtake(1));
+
+    controller2.leftTrigger().whileTrue(arm.outtake(-0.25));
 
 
     // controller.cross().whileTrue(elevator.setSpeed(-1));
     // controller.circle().whileTrue(arm.outtake(-0.5));
     // controller.square().whileTrue(arm.intake(0.5));
 
-    controller2.y().whileTrue(elevator.setSpeed(3));
-    controller2.a().whileTrue(elevator.setSpeed(-2.5));
-    controller2.x().whileTrue(arm.intake(0.5));
+    controller2.y().whileTrue(elevator.setSpeed(2.5));
+    controller2.a().whileTrue(elevator.setSpeed(-2));
+    controller2.x().whileTrue(arm.intake(0.6));
     controller2.pov(0).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L4Height))
+      elevator.moveToHeight(Constants.L4Height)).andThen(
+      arm.moveToPosition(Constants.L4Rotation))
     );
     controller2.pov(270).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
@@ -213,16 +228,20 @@ public class RobotContainer {
       elevator.moveToHeight(Constants.L2Height)).andThen(
       arm.moveToPosition(Constants.L2Rotation))
     );
-    controller2.pov(180).whileTrue(
-      arm.moveToPosition(Constants.transitionRotation).andThen(
-      elevator.moveToHeight(Constants.L1Height)).andThen(
-      arm.moveToPosition(Constants.L1Rotation))
-    );
+    // controller2.pov(180).whileTrue(
+    //   arm.moveToPosition(Constants.transitionRotation).andThen(
+    //   elevator.moveToHeight(Constants.L1Height)).andThen(
+    //   arm.moveToPosition(Constants.L1Rotation))
+    // );
     
-    controller2.b().whileTrue(
+    controller2.pov(180).whileTrue(
       arm.moveToPosition(Constants.transitionRotation).andThen(
       elevator.moveToHeight(Constants.intakeHeight)).andThen(
       arm.moveToPosition(Constants.intakeRotation))
+    );
+
+    controller2.b().whileTrue(
+      arm.outtake(0.1)
     );
      
     
