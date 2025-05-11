@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Transition rotation"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 6.0
@@ -23,7 +29,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "L3"
                 }
               }
             ]
@@ -52,13 +58,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.5
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake"
+                        "name": "IntakeHeight"
                       }
                     }
                   ]

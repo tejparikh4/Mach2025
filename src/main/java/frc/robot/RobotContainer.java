@@ -94,6 +94,12 @@ public class RobotContainer {
         arm.moveToPosition(Constants.L4Rotation)
       )
     );
+    NamedCommands.registerCommand("L3",
+      arm.moveToPosition(Constants.transitionRotation).andThen(
+      elevator.moveToHeight(Constants.L3Height)).andThen(
+        arm.moveToPosition(Constants.L3Rotation)
+      )
+    );
     NamedCommands.registerCommand("Transition rotation",
       arm.moveToPosition(Constants.transitionRotation)
     );
