@@ -7,6 +7,15 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.numbers.N1;
+
 import java.util.Arrays;
 
 /**
@@ -35,7 +44,7 @@ public final class Constants {
   public static final int kSecondaryControllerPort = 1;
   public static int intakeMotorTopId=15;
   public static int intakeMotorBottomId=16;
-
+  public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   public static double intakeHeight = 0.8;
   public static double intakeRotation = 0.0312;
 
@@ -60,6 +69,7 @@ public final class Constants {
   public static double colorSumThreshold = 400;
 
   public static double closestFiducialIgnoreThreshold = 4;
+  public static Transform3d kRobotToCam = new Transform3d();
 
 
 
