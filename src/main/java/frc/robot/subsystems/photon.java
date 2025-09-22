@@ -1,5 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -10,8 +15,10 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import swervelib.SwerveDrive;
 
 public class photon  extends SubsystemBase{
@@ -24,7 +31,7 @@ public class photon  extends SubsystemBase{
     EstimateConsumer estConsumer;
 
 
-    public photon(SwerveSubsystem swerveDriveBase, EstimateConsumer estConsumer){
+    public photon(SwerveSubsystem swerveDriveBase, EstimateConsumer estConsumer ){
         this.swerveDriveBase = swerveDriveBase;
         this.camera = new PhotonCamera("photonvision");
         this.estConsumer = estConsumer;
@@ -33,16 +40,18 @@ public class photon  extends SubsystemBase{
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
     public void getResults(){
-        var result = camera.getAllUnreadResults();
-        boolean hasTargets = !result.isEmpty();
-        if (!hasTargets ){
-            return ;
-        }
-        else{
-            PhotonPipelineResult target = result.get(0);
-            
+            Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
+        for (PhotonPipelineResult change:camera.getAllUnreadResults()){
+            visionEstimate = photonEstimator.update(change);
+            if (RobotBase.isSimulation()){
+                visionEstimate.ifPresentOrElse(est ->
+                getSimDebugField()
+                        .getObject("VisionEstimation")
+                        .setPose(est.estimatedPose.toPose2d()));
+            }
         }
     }
+
     
     
     
