@@ -68,6 +68,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase = new SwerveSubsystem(this);
   public final Arm arm = new Arm();
+  public final ArmNew armNew = new ArmNew();
   public final Elevator elevator = new Elevator();
   public final Camera camera = new Camera(drivebase);
 
@@ -189,11 +190,11 @@ public class RobotContainer {
 
     controller.share().onTrue(new InstantCommand(() -> drivebase.resetOdometry(camera.getPose())));
 
-
+    controller.L2().onTrue(new InstantCommand(() -> armNew.rotateMotor(1))
     controller2.back().onTrue(new InstantCommand(()-> elevator.zeroEncoders()));
 
     controller.R2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(1)));
-    controller.L2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(-1)));
+    //controller.L2().whileTrue(new InstantCommand(() -> scheduleDriveToPose(-1)));
 
     controller.R1().whileTrue(driveFieldOrientedAngularVelocitySlow);
 
