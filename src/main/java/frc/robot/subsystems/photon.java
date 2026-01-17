@@ -18,6 +18,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -33,10 +34,9 @@ public class photon  extends SubsystemBase{
     EstimateConsumer estConsumer;
 
 
-    public photon(SwerveSubsystem swerveDriveBase, EstimateConsumer estConsumer ){
+    public photon(SwerveSubsystem swerveDriveBase){
         this.swerveDriveBase = swerveDriveBase;
         this.camera = new PhotonCamera("photonvision");
-        this.estConsumer = estConsumer;
         photonEstimator =
                 new PhotonPoseEstimator(Constants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);

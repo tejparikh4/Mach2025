@@ -70,7 +70,7 @@ public class RobotContainer {
   public final Arm arm = new Arm();
   public final Elevator elevator = new Elevator();
   public final Camera camera = new Camera(drivebase);
-
+  public final photon photnVision = new photon(drivebase);
 
   private SendableChooser<String> chooserAuto;
 
